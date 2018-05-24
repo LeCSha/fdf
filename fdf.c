@@ -22,21 +22,23 @@ t_map *ft_open(char *av, t_map *map)
     int nblignes;
     int i;
     int j;
-    char *tmp;
+    int tmp;
+    // char *tmp;
     int begin;
     int iter;
     int nbpoints;
     
     i = 0;
-    j = 0;
     nbpoints = 0;
     iter = 0;
     nblignes = 0;
+    tmp = 0;
     fd = open(av, O_RDONLY);
     if (fd == -1)
         return (0);
     while (get_next_line(fd, &line) != 0)
     {
+        j = 0;
         nbpoints = 0;
         while (line[j] != '\0')
         {
@@ -44,6 +46,12 @@ t_map *ft_open(char *av, t_map *map)
                 nbpoints++;
             j++;
         }
+        if (tmp == 0)
+            tmp = nbpoints;
+        else
+            if (tmp != nbpoints)
+                return (0);
+
         nblignes++;
     }
     if (!(map = (t_map*)malloc(sizeof(t_map) * nblignes)))
@@ -55,8 +63,10 @@ t_map *ft_open(char *av, t_map *map)
     fd = open(av, O_RDONLY);
     if (fd == -1)
         return (0);
-    while (get_next_line(fd, &line))
+
+    while (get_next_line(fd, &line) > 0)
     {
+        // printf("%d\n", nbpoints);
         if (!(map[i].point = (t_point*)malloc(sizeof(t_point) * nbpoints)))
             return (NULL);
         j = 0;
@@ -72,24 +82,28 @@ t_map *ft_open(char *av, t_map *map)
 
                     while ((line[j] >= '0' && line[j] <= '9' )|| line[j] == '-')
                         j++;
-                    tmp = ft_strsub(line, begin, j);
-                    printf("%d\n", iter);
-                    map[i].point[iter].z = ft_atoi(tmp);
+                    // tmp = ft_strsub(line, begin, j);
+                    // printf("%d\n", iter);
+                    map[i].point[iter].z = ft_atoi(ft_strsub(line, begin, j));
                     map[i].point[iter].x = iter;
                     map[i].point[iter].y = i;
-                    printf("nb valeur du point n'%d de la ligne n'%i : %i\n", iter, i, map[i].point[iter].z);
+                    // free(tmp);
+                    // printf("nb valeur du point n'%d de la ligne n'%i : %i\n", iter, i, map[i].point[iter].z);
                 }
                 else{
                     map[i].point[iter].z = ft_atoi(&line[j]);
                     map[i].point[iter].x = iter;
                     map[i].point[iter].y = i;
-                    printf("chiffre valeur du point n'%d de la ligne n'%i : %i\n", iter, i, map[i].point[iter].z);                    
+                    // printf("chiffre valeur du point n'%d de la ligne n'%i : %i\n", iter, i, map[i].point[iter].z);                    
                 }
                 iter++;
             }
             j++;
         }
+        // free(line);
         i++;
+        if (line != NULL)
+            free(line);
     }
     close(fd);
     return (map);
@@ -97,85 +111,51 @@ t_map *ft_open(char *av, t_map *map)
 
 void fdf(t_mlx mlx, t_map *map)
 {
-    int i;
-    int iter;
-    int xinc; 
-    int yinc;
-    int cumul;
+    
     int dx;
     int dy;
-    int j;
-    int xd;
-    int yd;
+    // int cumul;
+    unsigned int i;
+    unsigned int j;
 
     i = 0;
-    j = 0;
-    iter = 0;
-    // dx = xf - xi;
-    // dy = yf - yi;
-    // mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, xd, yd, 0xc71515);
     while (i != map[0].nblignes)
     {
-        // printf("passe ds le tab[i]");
-        while (j != map[0].nbpoints)
-        {
-        // printf("passe ds le tab[i][j]");
-            
-            xd = j;
-            dx = xd+1 - xd + 5;
-            dy = i;
-            yd = i;
-            dx = abs(dx);
-            dy = abs(dy);
-            xinc = (dx > 0) ? 1: -1;
-            yinc = (dy > 0) ? 1: -1;
-            if (dx > dy)
-            {
-                cumul = dx/2;
-                while (iter++ <= dx)
-                {
-                    xd += xinc;
-                    cumul += dy;
-                    if (cumul >= dx)
-                    {
-                        cumul -= dx;
-                        yd += yinc;
-                    }
-                    mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, xd, yd, 0xc71515);
-                    j++;
-                }
-            }
-            else{
-                cumul = dy/2;
-                while (iter++ <= dy)
-                {
-                    yd += yinc;
-                    cumul += dx;
-                    if (cumul >= dy){
-                        cumul -= dy;
-                        xd += xinc;
-                    }
-                    mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, xd, yd, 0xc71515);
-                    j++;
-                }
-            }
-        }
         j = 0;
+        dx = map[i].point[map[0].nblignes - 1].x - map[i].point[j].x;
+        if (dx != 0)
+            if (dx > 0)
+            {
+                dy = map[i].point[map[0].nblignes - 1].y - map[i].point[j].y;
+                if (dy != 0)
+                    if (dy > 0)
+                    {
+                        
+                    }
+            }
+        printf("%d\n", dx);
+        // while (j != map[0].nbpoints)
+        // {
+
+        //     j++;
+        // }
+        mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, 100, 100, 0xc71515);
         i++;
     }
+
     mlx_loop(mlx.mlx_ptr);
 
 }
 int main(int ac, char **av)
 {
     t_mlx mlx;
-    t_map map;
+    t_map *map;
     // int *tab;
     if (ac != 2)
         return (0);
-
-    ft_open(av[1], &map);
+    map = NULL;
+    map = ft_open(av[1], map);
     mlx = init_mlx();
-    // fdf(mlx, &map);
+    fdf(mlx, map);
     return (0);
 }
