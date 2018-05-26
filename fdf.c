@@ -230,10 +230,10 @@ void fdf(t_mlx mlx, t_map *map)
             seg = 0;
             while (seg < 19)
             {
-              if (map->point[map[0].nbpoints].x > map->point[j].x)
-                line_rightup(mlx, map[i].point[j].x, map[i].point[j].y, map[i].point[map[0].nbpoints].x, map[i].point[map[0].nbpoints].y, i, j);
+              if (map->point[map[0].nbpoints - 1].x > map->point[j].x)
+                line_rightup(mlx, map[i].point[j].x, map[i].point[j].y, map[i].point[map[0].nbpoints - 1].x, map[i].point[map[0].nbpoints - 1].y, i, j);
               else
-                line_rightdown(mlx, map[i].point[j].x, map[i].point[j].y, map[i].point[map[0].nbpoints].x, map[i].point[map[0].nbpoints].y, i, j);
+                line_rightdown(mlx, map[i].point[j].x, map[i].point[j].y, map[i].point[map[0].nbpoints - 1].x, map[i].point[map[0].nbpoints - 1].y, i, j);
               seg++;
             }
             //mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, (map[i].point[j].x * 0.8 * 20) + i * 20, (map[i].point[j].y * 20 * 0.8 + 200) - j * 20, 0xc71515);
