@@ -12,9 +12,11 @@
 
 #ifndef LIBFT_H
 # define LIBFT_H
+# define BUFF_SIZE 32
 # include <string.h>
 # include <stdlib.h>
 # include <unistd.h>
+# include <limits.h>
 # include <sys/types.h>
 # include <sys/stat.h>
 # include <fcntl.h>

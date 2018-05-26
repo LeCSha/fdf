@@ -27,7 +27,7 @@ t_map *ft_open(char *av, t_map *map)
     int begin;
     int iter;
     int nbpoints;
-    
+
     i = 0;
     nbpoints = 0;
     iter = 0;
@@ -94,7 +94,7 @@ t_map *ft_open(char *av, t_map *map)
                     map[i].point[iter].z = ft_atoi(&line[j]);
                     map[i].point[iter].x = iter;
                     map[i].point[iter].y = i;
-                    // printf("chiffre valeur du point n'%d de la ligne n'%i : %i\n", iter, i, map[i].point[iter].z);                    
+                    // printf("chiffre valeur du point n'%d de la ligne n'%i : %i\n", iter, i, map[i].point[iter].z);
                 }
                 iter++;
             }
@@ -108,193 +108,141 @@ t_map *ft_open(char *av, t_map *map)
     close(fd);
     return (map);
 }
-void    draw_line(t_mlx mlx, t_map *map, t_map *nbpoints, int i)
-{
+
+  void line_rightup(t_mlx mlx, int x, int y, int x1, int y1, int i, int j)
+  {
     int dx;
     int dy;
     int dp;
     int deltae;
     int deltane;
-    int x;
-    int y;
-    unsigned int j;
 
-    j = 0;
-    while (j < nbpoints->nbpoints)
+    dx = x1 - x;
+    dy = y - y1;
+    if (dx >= dy)
     {
-        x = map->point[j].x;
-        y = map->point[j].y;
-        dx = abs(map->point[j+1].x - map->point[j].x);
-        dy = abs(map->point[j+1].y - map->point[j].y);
-        mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, (x * 0.8 * 20) + i * 20, (map[i].point[j].y * 20 * 0.8 + 200) - j * 20, 0xc71515);
-        if (map->point[j+1].x > x)
+        dp = (2 * dy) - dx;
+        deltae = 2 * dy;
+        deltane = 2 * (dy - dx);
+        while (x < x1)
         {
-            if (dx >= dy)
-            {
-                dp = (2 * dy) - dx;
-                deltae = 2 * dy;
-                deltane = 2 * (dy - dx);
-                if (dp <= 0)
-                {
-                    dp += deltae;
-                    x++;
-                }
-                else
-                {
-                    dp += deltane;
-                    x++;
-                    y--;
-                }
-                mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, (x * 0.8 * 20) + i * 20, (map[i].point[j].y * 20 * 0.8 + 200) - j * 20, 0xc71515); 
-            }
-            else
-            {
-                dp = (2 * dx) - dy;
-                deltae = 2 * dx;
-                deltane = 2 * (dx - dy);
-                if (dp <= 0)
-                {
-                    dp += deltae;
-                    y--;
-                }
-                else
-                {
-                    dp += deltane;
-                    x++;
-                    y--;
-                }
-                mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, (x * 0.8 * 20) + i * 20, (map[i].point[j].y * 20 * 0.8 + 200) - j * 20, 0xc71515);            
-            }
+          if (dp <= 0)
+              dp += deltae;
+          else
+          {
+              dp = dp + deltane;
+              y--;
+          }
+          x++;
+          mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, (x * 0.8 * 20) + i * 20, (y * 20 * 0.8 + 200) - j * 20, 0xc71515);
         }
-        else
-        {
-            // dx = abs(map->point[j+1].x - map->point[j].x);
-            // dy = abs(map->point[j+1].y - map->point[j].y);
-            if (dx >= dy)
-            {
-                dp = (2 * dy) - dx;
-                deltae = 2 * dy;
-                deltane = 2 * (dy - dx);
-                if (dp <= 0)
-                {
-                    dp += deltae;
-                    x++;
-                }
-                else
-                {
-                    dp += deltane;
-                    x++;
-                    y++;
-                }
-                mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, (x * 0.8 * 20) + i * 20, (map[i].point[j].y * 20 * 0.8 + 200) - j * 20, 0xc71515); 
-            }
-            else
-            {
-                dp = (2 * dx) - dy;
-                deltae = 2 * dx;
-                deltane = 2 * (dx - dy);
-                if (dp <= 0)
-                {
-                    dp += deltae;
-                    y++;
-                }
-                else
-                {
-                    dp += deltane;
-                    x++;
-                    y++;
-                }
-                mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, (x * 0.8 * 20) + i * 20, (map[i].point[j].y * 20 * 0.8 + 200) - j * 20, 0xc71515);            
-            }
-        }
-                
-        
-        // while (x < map->point[j+1].x)
-        // {
-        //     if (dp <= 0)
-        //         dp += deltae;
-        //     else
-        //     {
-        //         dp += deltane;
-        //         y++;
-        //     }
-        //     x++;
-        //     mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, (x * 0.8 * 20) + i * 20, (map[i].point[j].y * 20 * 0.8 + 200) - j * 20, 0xc71515); 
-        // }
-        j++;
     }
+    else
+    {
+      printf("%d\n", y);
+      printf("%d\n", y1);
+        dp = (2 * dx) - dy;
+        deltae = 2 * dx;
+        deltane = 2 * (dx - dy);
+        while (y > y1)
+        {
+          if (dp <= 0)
+          {
+              dp += deltae;
+              y--;
+          }
+          else
+          {
+              dp = dp + deltane;
+              x++;
+              y--;
+          }
+        }
+        mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, (x * 0.8 * 20) + i * 20, (y * 20 * 0.8 + 200) - j * 20, 0xc71515);
+      }
+  }
+
+void line_rightdown(t_mlx mlx, int x, int y, int x1, int y1, int i, int j)
+{
+  int dx;
+  int dy;
+  int dp;
+  int deltae;
+  int deltane;
+
+  dx = x1 - x;
+  dy = y1 - y;
+  if (dx >= dy)
+  {
+      dp = (2 * dy) - dx;
+      deltae = 2 * dy;
+      deltane = 2 * (dy - dx);
+      if (dp <= 0)
+      {
+          dp += deltae;
+          x++;
+      }
+      else
+      {
+          dp += deltane;
+          x++;
+          y++;
+      }
+      mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, (x * 0.8 * 20) + i * 20, (y * 20 * 0.8 + 200) - j * 20, 0xc71515);
+  }
+  else
+  {
+      dp = (2 * dx) - dy;
+      deltae = 2 * dx;
+      deltane = 2 * (dx - dy);
+      if (dp <= 0)
+      {
+          dp += deltae;
+          y++;
+      }
+      else
+      {
+          dp += deltane;
+          x++;
+          y++;
+      }
+      mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, (x * 0.8 * 20) + i * 20, (y * 20 * 0.8 + 200) - j * 20, 0xc71515);
+  }
+
 }
-// static void		init_line(int *x, int *y, t_point a, t_point b)
-// {
-// 	x[0] = abs(b.x - a.x);
-// 	y[0] = abs(b.y - a.y);
-// 	x[1] = (b.x > a.x ? 1 : -1);
-// 	y[1] = (b.y > a.y ? 1 : -1);
-// 	x[2] = a.x;
-// 	y[2] = a.y;
-// }
-
-// void			draw_line(t_mlx mlx, t_map *map, t_point a, t_point b)
-// {
-// 	int x[3];
-// 	int y[3];
-// 	int err[2];
-
-// 	init_line(x, y, a, b);
-// 	err[0] = x[0] - y[0];
-// 	while (!((b.x == x[2]) && (b.y == y[2])))
-// 	{
-// 		// ppixel(env, x[2], y[2], gradient(env, vectorize(&a, &b), x[2], y[2]));
-// 		err[1] = err[0];
-// 		if (err[1] > -x[0])
-// 		{
-// 			err[0] -= y[0];
-// 			x[2] += x[1];
-// 		}
-// 		if (err[1] <= y[0])
-// 		{
-// 			err[0] += x[0];
-// 			y[2] += y[1];
-// 		}
-// 	}
-// }
 
 void fdf(t_mlx mlx, t_map *map)
 {
-    
-    // int dx;
-    // int dy;
-    // int cumul;
     unsigned int i;
     unsigned int j;
+    int seg;
 
     i = 0;
     while (i < map[0].nblignes)
     {
         j = 0;
-        // dx = map[i].point[map[0].nblignes - 1].x - map[i].point[j].x;
-        // dy = map[i].point[map[0].nblignes - 1].y - map[i].point[j].y;
-        // mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, ((map[i].point[j].x * 0.8) * 20 + v + 200) + i * 20, (map[i].point[j].y * 0.8 * 20 + v + 200) - j * 20, 0xc71515);
-        // if (dx != 0)
-        //     if (dx > 0)
-        //     {
-        //         if (dy != 0)
-        //             if (dy > 0)
-        //             {
-                        
-        //             }
-        //     }
-        // printf("%d\n", dx);
-        draw_line(mlx, &map[i], &map[0], i);
-        while (j < map[0].nbpoints)
+        while (j < map[0].nbpoints - 1)
         {
-            mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, (map[i].point[j].x * 0.8 * 20) + i * 20, (map[i].point[j].y * 20 * 0.8 + 200) - j * 20, 0xc71515);
+            if (map->point[j+1].x > map->point[j].x)
+              line_rightup(mlx, map[i].point[j].x, map[i].point[j].y, map[i].point[j + 1].x, map[i].point[j + 1].y, i, j);
+            else
+              line_rightdown(mlx, map[i].point[j].x, map[i].point[j].y, map[i].point[j + 1].x, map[i].point[j + 1].y, i, j);
+            seg = 0;
+            while (seg < 19)
+            {
+              if (map->point[map[0].nbpoints].x > map->point[j].x)
+                line_rightup(mlx, map[i].point[j].x, map[i].point[j].y, map[i].point[map[0].nbpoints].x, map[i].point[map[0].nbpoints].y, i, j);
+              else
+                line_rightdown(mlx, map[i].point[j].x, map[i].point[j].y, map[i].point[map[0].nbpoints].x, map[i].point[map[0].nbpoints].y, i, j);
+              seg++;
+            }
+            //mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, (map[i].point[j].x * 0.8 * 20) + i * 20, (map[i].point[j].y * 20 * 0.8 + 200) - j * 20, 0xc71515);
             // if (j != map[0].nbpoints - 1)
             //     for (int v = 0; v < 20; v++)
             //         mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, ((map[i].point[j].x * 0.8) * 20 + v + 200) + i * 20, (map[i].point[j].y * 0.8 * 20 + v + 200) - j * 20, 0xc71515);
             // if (i != map[0].nblignes - 1)
             //     for (unsigned int z = 0; z < 20; z++)
-            //         mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, ((map[i].point[j].x * 0.8) * 20 + 200) + (i * 20), (map[i].point[j].y * 0.8 * 20 + z + 200) - (j * 20), 0xc71515);     
+            //         mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, ((map[i].point[j].x * 0.8) * 20 + 200) + (i * 20), (map[i].point[j].y * 0.8 * 20 + z + 200) - (j * 20), 0xc71515);
             j++;
         }
         i++;
