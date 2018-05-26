@@ -111,6 +111,7 @@ t_map *ft_open(char *av, t_map *map)
 
   void line_rightup(t_mlx mlx, int x, int y, int x1, int y1, int i, int j)
   {
+      printf("je rentre ds rightUP \n");
     int dx;
     int dy;
     int dp;
@@ -121,6 +122,7 @@ t_map *ft_open(char *av, t_map *map)
     dy = y - y1;
     if (dx >= dy)
     {
+      printf("dx >= dy \n");        
         dp = (2 * dy) - dx;
         deltae = 2 * dy;
         deltane = 2 * (dy - dx);
@@ -134,11 +136,13 @@ t_map *ft_open(char *av, t_map *map)
               y--;
           }
           x++;
-          mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, (x * 0.8) + i * 20, (y * 0.8 + 200) - j * 20, 0xc71515);
+          mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, (x * 0.8) + i, (y * 0.8 + 200) - j, 0xc71515);
         }
     }
     else
     {
+      printf("dx < dy \n");
+        
       printf("%d\n", y);
       printf("%d\n", y1);
         dp = (2 * dx) - dy;
@@ -158,12 +162,14 @@ t_map *ft_open(char *av, t_map *map)
               y--;
           }
         }
-        mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, (x * 0.8) + i * 20, (y * 0.8 + 200) - j * 20, 0xc71515);
+        mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, (x * 0.8) + i, (y * 0.8 + 200) - j, 0xc71515);
       }
   }
 
 void line_rightdown(t_mlx mlx, int x, int y, int x1, int y1, int i, int j)
 {
+      printf("je rentre ds rightDOWN \n");
+    
   int dx;
   int dy;
   int dp;
@@ -174,6 +180,8 @@ void line_rightdown(t_mlx mlx, int x, int y, int x1, int y1, int i, int j)
   dy = y1 - y;
   if (dx >= dy)
   {
+      printf("dx >= dy \n");
+      
       dp = (2 * dy) - dx;
       deltae = 2 * dy;
       deltane = 2 * (dy - dx);
@@ -191,10 +199,12 @@ void line_rightdown(t_mlx mlx, int x, int y, int x1, int y1, int i, int j)
             y++;
         }
       }
-      mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, (x * 0.8) + i * 20, (y * 0.8 + 200) - j * 20, 0xc71515);
+      mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, (x * 0.8) + i, (y * 0.8 + 200) - j, 0xc71515);
   }
   else
   {
+      printf("dx < dy \n");
+      
       dp = (2 * dx) - dy;
       deltae = 2 * dx;
       deltane = 2 * (dx - dy);
@@ -212,7 +222,7 @@ void line_rightdown(t_mlx mlx, int x, int y, int x1, int y1, int i, int j)
             y++;
         }
       }
-      mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, (x * 0.8) + i * 20, (y * 0.8 + 200) - j * 20, 0xc71515);
+      mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, (x * 0.8) + i, (y * 0.8 + 200) - j, 0xc71515);
   }
 
 }
@@ -229,10 +239,10 @@ void fdf(t_mlx mlx, t_map *map)
         j = 0;
         while (j < map[0].nbpoints - 1)
         {
-            if (map[i]->point[j+1].x * 20 > map[i]->point[j].x)
-              line_rightup(mlx, map[i].point[j].x * 20, map[i].point[j].y * 20, map[i].point[j + 1].x * 20, map[i].point[j + 1].y * 20, i, j);
+            if (map[i].point[j+1].x * 20 > map[i].point[j].x)
+              line_rightup(mlx, map[i].point[j].x * 20, map[i].point[j].y * 20, map[i].point[j + 1].x * 20, map[i].point[j + 1].y * 20, i * 20, j * 20);
             else
-              line_rightdown(mlx, map[i].point[j].x * 20, map[i].point[j].y * 20, map[i].point[j + 1].x * 20, map[i].point[j + 1].y * 20, i, j);
+              line_rightdown(mlx, map[i].point[j].x * 20, map[i].point[j].y * 20, map[i].point[j + 1].x * 20, map[i].point[j + 1].y * 20, i * 20, j * 20);
             // seg = 0;
             // while (seg < 19)
             // {
