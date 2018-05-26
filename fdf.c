@@ -134,7 +134,7 @@ t_map *ft_open(char *av, t_map *map)
               y--;
           }
           x++;
-          mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, (x * 0.8 * 20) + i * 20, (y * 20 * 0.8 + 200) - j * 20, 0xc71515);
+          mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, (x * 0.8) + i * 20, (y * 0.8 + 200) - j * 20, 0xc71515);
         }
     }
     else
@@ -158,7 +158,7 @@ t_map *ft_open(char *av, t_map *map)
               y--;
           }
         }
-        mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, (x * 0.8 * 20) + i * 20, (y * 20 * 0.8 + 200) - j * 20, 0xc71515);
+        mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, (x * 0.8) + i * 20, (y * 0.8 + 200) - j * 20, 0xc71515);
       }
   }
 
@@ -177,36 +177,42 @@ void line_rightdown(t_mlx mlx, int x, int y, int x1, int y1, int i, int j)
       dp = (2 * dy) - dx;
       deltae = 2 * dy;
       deltane = 2 * (dy - dx);
-      if (dp <= 0)
+      while (x < x1)
       {
-          dp += deltae;
-          x++;
+        if (dp <= 0)
+        {
+            dp += deltae;
+            x++;
+        }
+        else
+        {
+            dp += deltane;
+            x++;
+            y++;
+        }
       }
-      else
-      {
-          dp += deltane;
-          x++;
-          y++;
-      }
-      mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, (x * 0.8 * 20) + i * 20, (y * 20 * 0.8 + 200) - j * 20, 0xc71515);
+      mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, (x * 0.8) + i * 20, (y * 0.8 + 200) - j * 20, 0xc71515);
   }
   else
   {
       dp = (2 * dx) - dy;
       deltae = 2 * dx;
       deltane = 2 * (dx - dy);
-      if (dp <= 0)
+      while(y < y1)
       {
-          dp += deltae;
-          y++;
+        if (dp <= 0)
+        {
+            dp += deltae;
+            y++;
+        }
+        else
+        {
+            dp += deltane;
+            x++;
+            y++;
+        }
       }
-      else
-      {
-          dp += deltane;
-          x++;
-          y++;
-      }
-      mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, (x * 0.8 * 20) + i * 20, (y * 20 * 0.8 + 200) - j * 20, 0xc71515);
+      mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, (x * 0.8) + i * 20, (y * 0.8 + 200) - j * 20, 0xc71515);
   }
 
 }
@@ -223,19 +229,19 @@ void fdf(t_mlx mlx, t_map *map)
         j = 0;
         while (j < map[0].nbpoints - 1)
         {
-            if (map->point[j+1].x > map->point[j].x)
-              line_rightup(mlx, map[i].point[j].x, map[i].point[j].y, map[i].point[j + 1].x, map[i].point[j + 1].y, i, j);
+            if (map[i]->point[j+1].x * 20 > map[i]->point[j].x)
+              line_rightup(mlx, map[i].point[j].x * 20, map[i].point[j].y * 20, map[i].point[j + 1].x * 20, map[i].point[j + 1].y * 20, i, j);
             else
-              line_rightdown(mlx, map[i].point[j].x, map[i].point[j].y, map[i].point[j + 1].x, map[i].point[j + 1].y, i, j);
-            seg = 0;
-            while (seg < 19)
-            {
-              if (map->point[map[0].nbpoints - 1].x > map->point[j].x)
-                line_rightup(mlx, map[i].point[j].x, map[i].point[j].y, map[i].point[map[0].nbpoints - 1].x, map[i].point[map[0].nbpoints - 1].y, i, j);
-              else
-                line_rightdown(mlx, map[i].point[j].x, map[i].point[j].y, map[i].point[map[0].nbpoints - 1].x, map[i].point[map[0].nbpoints - 1].y, i, j);
-              seg++;
-            }
+              line_rightdown(mlx, map[i].point[j].x * 20, map[i].point[j].y * 20, map[i].point[j + 1].x * 20, map[i].point[j + 1].y * 20, i, j);
+            // seg = 0;
+            // while (seg < 19)
+            // {
+            //   if (map->point[map[0].nbpoints - 1].x > map->point[j].x)
+            //     line_rightup(mlx, map[i].point[j].x * 20, map[i].point[j].y * 20, map[i].point[map[0].nbpoints - 1].x * 20, map[i].point[map[0].nbpoints - 1].y * 20, i, j);
+            //   else
+            //     line_rightdown(mlx, map[i].point[j].x * 20, map[i].point[j].y * 20, map[i].point[map[0].nbpoints - 1].x * 20, map[i].point[map[0].nbpoints - 1].y * 20, i, j);
+            //   seg++;
+            // }
             //mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, (map[i].point[j].x * 0.8 * 20) + i * 20, (map[i].point[j].y * 20 * 0.8 + 200) - j * 20, 0xc71515);
             // if (j != map[0].nbpoints - 1)
             //     for (int v = 0; v < 20; v++)
