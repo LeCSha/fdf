@@ -122,26 +122,105 @@ void    draw_line(t_mlx mlx, t_map *map, t_map *nbpoints, int i)
     j = 0;
     while (j < nbpoints->nbpoints)
     {
-        dx = map->point[j+1].x - map->point[j].x;
-        dy = map->point[j+1].y - map->point[j].y;
-        dp = 2 * dy - dx;
-        deltae = 2 * dy;
-        deltane = 2 * (dy - dx);
         x = map->point[j].x;
         y = map->point[j].y;
+        dx = abs(map->point[j+1].x - map->point[j].x);
+        dy = abs(map->point[j+1].y - map->point[j].y);
         mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, (x * 0.8 * 20) + i * 20, (map[i].point[j].y * 20 * 0.8 + 200) - j * 20, 0xc71515);
-        while (x < map->point[j+1].x)
+        if (map->point[j+1].x > x)
         {
-            if (dp <= 0)
-                dp += deltae;
+            if (dx >= dy)
+            {
+                dp = (2 * dy) - dx;
+                deltae = 2 * dy;
+                deltane = 2 * (dy - dx);
+                if (dp <= 0)
+                {
+                    dp += deltae;
+                    x++;
+                }
+                else
+                {
+                    dp += deltane;
+                    x++;
+                    y--;
+                }
+                mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, (x * 0.8 * 20) + i * 20, (map[i].point[j].y * 20 * 0.8 + 200) - j * 20, 0xc71515); 
+            }
             else
             {
-                dp += deltane;
-                y++;
+                dp = (2 * dx) - dy;
+                deltae = 2 * dx;
+                deltane = 2 * (dx - dy);
+                if (dp <= 0)
+                {
+                    dp += deltae;
+                    y--;
+                }
+                else
+                {
+                    dp += deltane;
+                    x++;
+                    y--;
+                }
+                mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, (x * 0.8 * 20) + i * 20, (map[i].point[j].y * 20 * 0.8 + 200) - j * 20, 0xc71515);            
             }
-            x++;
-            mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, (x * 0.8 * 20) + i * 20, (map[i].point[j].y * 20 * 0.8 + 200) - j * 20, 0xc71515); 
         }
+        else
+        {
+            // dx = abs(map->point[j+1].x - map->point[j].x);
+            // dy = abs(map->point[j+1].y - map->point[j].y);
+            if (dx >= dy)
+            {
+                dp = (2 * dy) - dx;
+                deltae = 2 * dy;
+                deltane = 2 * (dy - dx);
+                if (dp <= 0)
+                {
+                    dp += deltae;
+                    x++;
+                }
+                else
+                {
+                    dp += deltane;
+                    x++;
+                    y++;
+                }
+                mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, (x * 0.8 * 20) + i * 20, (map[i].point[j].y * 20 * 0.8 + 200) - j * 20, 0xc71515); 
+            }
+            else
+            {
+                dp = (2 * dx) - dy;
+                deltae = 2 * dx;
+                deltane = 2 * (dx - dy);
+                if (dp <= 0)
+                {
+                    dp += deltae;
+                    y++;
+                }
+                else
+                {
+                    dp += deltane;
+                    x++;
+                    y++;
+                }
+                mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, (x * 0.8 * 20) + i * 20, (map[i].point[j].y * 20 * 0.8 + 200) - j * 20, 0xc71515);            
+            }
+        }
+                
+        
+        // while (x < map->point[j+1].x)
+        // {
+        //     if (dp <= 0)
+        //         dp += deltae;
+        //     else
+        //     {
+        //         dp += deltane;
+        //         y++;
+        //     }
+        //     x++;
+        //     mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, (x * 0.8 * 20) + i * 20, (map[i].point[j].y * 20 * 0.8 + 200) - j * 20, 0xc71515); 
+        // }
         j++;
     }
 }
