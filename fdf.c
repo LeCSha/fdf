@@ -108,7 +108,43 @@ t_map *ft_open(char *av, t_map *map)
     close(fd);
     return (map);
 }
+void    draw_line(t_mlx mlx, t_map *map, t_map *nbpoints, int i)
+{
+    int dx;
+    int dy;
+    int dp;
+    int deltae;
+    int deltane;
+    int x;
+    int y;
+    unsigned int j;
 
+    j = 0;
+    while (j < nbpoints->nbpoints)
+    {
+        dx = map->point[j+1].x - map->point[j].x;
+        dy = map->point[j+1].y - map->point[j].y;
+        dp = 2 * dy - dx;
+        deltae = 2 * dy;
+        deltane = 2 * (dy - dx);
+        x = map->point[j].x;
+        y = map->point[j].y;
+        mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, (x * 0.8 * 20) + i * 20, (map[i].point[j].y * 20 * 0.8 + 200) - j * 20, 0xc71515);
+        while (x < map->point[j+1].x)
+        {
+            if (dp <= 0)
+                dp += deltae;
+            else
+            {
+                dp += deltane;
+                y++;
+            }
+            x++;
+            mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, (x * 0.8 * 20) + i * 20, (map[i].point[j].y * 20 * 0.8 + 200) - j * 20, 0xc71515); 
+        }
+        j++;
+    }
+}
 // static void		init_line(int *x, int *y, t_point a, t_point b)
 // {
 // 	x[0] = abs(b.x - a.x);
@@ -170,15 +206,16 @@ void fdf(t_mlx mlx, t_map *map)
         //             }
         //     }
         // printf("%d\n", dx);
+        draw_line(mlx, &map[i], &map[0], i);
         while (j < map[0].nbpoints)
         {
             mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, (map[i].point[j].x * 0.8 * 20) + i * 20, (map[i].point[j].y * 20 * 0.8 + 200) - j * 20, 0xc71515);
-            if (j != map[0].nbpoints - 1)
-                for (int v = 0; v < 20; v++)
-                    mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, ((map[i].point[j].x * 0.8) * 20 + v + 200) + i * 20, (map[i].point[j].y * 0.8 * 20 + v + 200) - j * 20, 0xc71515);
-            if (i != map[0].nblignes - 1)
-                for (unsigned int z = 0; z < 20; z++)
-                    mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, ((map[i].point[j].x * 0.8) * 20 + 200) + (i * 20), (map[i].point[j].y * 0.8 * 20 + z + 200) - (j * 20), 0xc71515);     
+            // if (j != map[0].nbpoints - 1)
+            //     for (int v = 0; v < 20; v++)
+            //         mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, ((map[i].point[j].x * 0.8) * 20 + v + 200) + i * 20, (map[i].point[j].y * 0.8 * 20 + v + 200) - j * 20, 0xc71515);
+            // if (i != map[0].nblignes - 1)
+            //     for (unsigned int z = 0; z < 20; z++)
+            //         mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, ((map[i].point[j].x * 0.8) * 20 + 200) + (i * 20), (map[i].point[j].y * 0.8 * 20 + z + 200) - (j * 20), 0xc71515);     
             j++;
         }
         i++;
