@@ -109,45 +109,38 @@ t_map *ft_open(char *av, t_map *map)
     return (map);
 }
 
-  void line_rightup(t_mlx mlx, int x1, int y1, int x2, int y2)
+  void line_rightup(t_mlx mlx, int x, int y, int x1, int y1)
   {
       printf("je rentre ds rightUP \n");
-    int x;
-    int y;
     int dx;
     int dy;
     int dp;
-    int xinc;
-    int yinc;
-    int cumul;
-    int i;
-printf("x1 %d et x2 %d\n", x1, x2);
-printf("y1 %d et y2 %d\n", y1, y2);
-    i = 0;
-    x = x1;
-    y = y1;
-    dx = x2 - x;
-    dy = y2 - y;
-    xinc = (dx > 0) ? 1 : -1;
-    yinc = (dy > 0) ? 1 : -1;
-    dx = abs(dx);
-    dy = abs(dy);
-    mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, x, y + 200, 0xc71515);
-    if (dx > dy)
+    int deltae;
+    int deltane;
+
+    dx = abs(x1 - x);
+    dy = abs(y - y1);
+    if (dx >= dy)
     {
-      printf("dx > dy \n");
+      printf("dx >= dy \n");
       printf("dx %d et dy %d\n", dx, dy);
-        cumul = dx / 2;
-        while (x != x2)
+        dp = (2 * dy) - dx;
+        deltae = 2 * dy;
+        deltane = 2 * (dy - dx);
+        while (x < x1)
         {
-            x += xinc;
-            cumul += dy;
-            if (cumul >= dx)
-            {
-                cumul -= dx;
-                y += yinc;
-                printf("dp <= 0 %d\n", cumul);
-            }
+
+          if (dp <= 0)
+          {
+            dp = dp + deltae;
+            printf("dp <= 0 %d\n", dp);
+          }
+          else
+          {
+              dp = dp + deltane;
+              y--;
+          }
+          x++;
           printf("x ds while %d\n", x);
           printf("y ds while %d\n", y);
           mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, x, y + 200, 0xc71515);
@@ -157,81 +150,89 @@ printf("y1 %d et y2 %d\n", y1, y2);
     {
       printf("dx < dy \n");
 
-        cumul = dy / 2;
-        while (y != y1)
+      printf("%d\n", y);
+      printf("%d\n", y1);
+        dp = (2 * dx) - dy;
+        deltae = 2 * dx;
+        deltane = 2 * (dx - dy);
+        while (y > y1)
         {
-            y += yinc;
-            cumul += dx;
-            if (cumul >= dy)
-            {
-                cumul -= dy;
-                x += xinc;
-            }
-            mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, x, y + 200, 0xc71515);
+          if (dp <= 0)
+          {
+              dp += deltae;
+              y--;
+          }
+          else
+          {
+              dp = dp + deltane;
+              x++;
+              y--;
+          }
         }
+        mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, x, y + 200, 0xc71515);
       }
   }
 
-// void line_rightdown(t_mlx mlx, int x, int y, int x1, int y1)
-// {
-//       printf("je rentre ds rightDOWN \n");
+void line_rightdown(t_mlx mlx, int x, int y, int x1, int y1)
+{
+      printf("je rentre ds rightDOWN \n");
 
-//   int dx;
-//   int dy;
-//   int dp;
-//   int deltae;
-//   int deltane;
+  int dx;
+  int dy;
+  int dp;
+  int deltae;
+  int deltane;
 
-//   dx = abs(x1 - x);
-//   dy = abs(y1 - y);
-//   if (dx >= dy)
-//   {
-//       printf("dx >= dy \n");
+  dx = abs(x1 - x);
+  dy = abs(y1 - y);
+  if (dx >= dy)
+  {
+      printf("dx >= dy \n");
 
-//       dp = (2 * dy) - dx;
-//       deltae = 2 * dy;
-//       deltane = 2 * (dy - dx);
-//       while (x < x1)
-//       {
-//         if (dp <= 0)
-//         {
-//             dp += deltae;
-//             x++;
-//         }
-//         else
-//         {
-//             dp += deltane;
-//             x++;
-//             y++;
-//         }
-//       }
-//       mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, x, y + 200, 0xc71515);
-//   }
-//   else
-//   {
-//       printf("dx < dy \n");
+      dp = (2 * dy) - dx;
+      deltae = 2 * dy;
+      deltane = 2 * (dy - dx);
+      while (x < x1)
+      {
+        if (dp <= 0)
+        {
+            dp += deltae;
+            x++;
+        }
+        else
+        {
+            dp += deltane;
+            x++;
+            y++;
+        }
+      }
+      mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, x, y + 200, 0xc71515);
+  }
+  else
+  {
+      printf("dx < dy \n");
 
-//       dp = (2 * dx) - dy;
-//       deltae = 2 * dx;
-//       deltane = 2 * (dx - dy);
-//       while(y < y1)
-//       {
-//         if (dp <= 0)
-//         {
-//             dp += deltae;
-//             y++;
-//         }
-//         else
-//         {
-//             dp += deltane;
-//             x++;
-//             y++;
-//         }
-//       }
-//       mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, x, y + 200, 0xc71515);
-//   }
+      dp = (2 * dx) - dy;
+      deltae = 2 * dx;
+      deltane = 2 * (dx - dy);
+      while(y < y1)
+      {
+        if (dp <= 0)
+        {
+            dp += deltae;
+            y++;
+        }
+        else
+        {
+            dp += deltane;
+            x++;
+            y++;
+        }
+      }
+      mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, x, y + 200, 0xc71515);
+  }
 
-// }
+}
 
 void fdf(t_mlx mlx, t_map *map)
 {
@@ -244,12 +245,12 @@ void fdf(t_mlx mlx, t_map *map)
         j = 0;
         while (j < map[0].nbpoints - 1)
         {
-            // if (map[i].point[j+1].x * 20 > map[i].point[j].x * 20)
+            if (map[i].point[j+1].x * 20 > map[i].point[j].x * 20)
               line_rightup(mlx, map[i].point[j].x * 20 * 0.8 + (i * 20),
-              (map[i].point[j].y * 20 * 0.8) - (j * 20), (map[i].point[j + 1].x * 20 * 0.8) + (i * 20), (map[i].point[j + 1].y * 20 * 0.8) - (j * 20));
-            // else
-            //   line_rightdown(mlx, (map[i].point[j].x * 20 * 0.8) - (i * 20), map[i].point[j].y * 20 * 0.8 + (j * 20),
-            //   (map[i].point[j + 1].x * 20 * 0.8) - (i * 20), (map[i].point[j + 1].y * 20 * 0.8) + (j * 20));
+              map[i].point[j].y * 20 * 0.8 - (j * 20), map[i].point[j + 1].x * 20 * 0.8 + (i * 20), map[i].point[j + 1].y * 20 * 0.8 - (j * 20));
+            else
+              line_rightdown(mlx, map[i].point[j].x * 20 * 0.8 - (i * 20), map[i].point[j].y * 20 * 0.8 + (j * 20),
+              map[i].point[j + 1].x * 20 * 0.8 - (i * 20), map[i].point[j + 1].y * 20 * 0.8 + (j * 20));
             // seg = 0;
             // while (seg < 19)
             // {
