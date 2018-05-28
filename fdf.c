@@ -109,6 +109,41 @@ t_map *ft_open(char *av, t_map *map)
     return (map);
 }
 
+int coord_x(int x, int y)
+{
+  return (850 - (y * 20) + (x * 20));
+}
+
+int   coord_y(int x, int y, int z)
+{
+  if (z > 30000)
+    z = 30000;
+  if (z < -30000)
+    z = -30000;
+  return (50 + (20 * x) + (20 * y) - (z * 2));
+}
+
+void test_relief(t_map **map)
+{
+  unsigned int i;
+  unsigned int j;
+
+  i = 0;
+  while (i < map[0]->nblignes)
+  {
+    printf("je rentre ds test relief \n");
+    j = 0;
+    while (j < map[0]->nbpoints)
+    {
+        map[i]->point[j].x = coord_x(j, i);
+        printf(" x ap coor_x %d\n", map[i]->point[j].x);
+        map[i]->point[j].y = coord_y(j, i, map[i]->point[j].z);
+        printf(" y ap coor_y %d\n", map[i]->point[j].y);
+      j++;
+    }
+    i++;
+  }
+}
   void line_rightup(t_mlx mlx, int x1, int y1, int x2, int y2)
   {
       printf("je rentre ds rightUP \n");
@@ -129,7 +164,7 @@ printf("y1 %d et y2 %d\n", y1, y2);
     yinc = (dy > 0) ? 1 : -1;
     dx = abs(dx);
     dy = abs(dy);
-    mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, x, y + 500, 0xc71515);
+    mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, x - y + 200, (y + x) / 2, 0xc71515);
     if (dx > dy)
     {
       printf("dx > dy \n");
@@ -148,7 +183,7 @@ printf("y1 %d et y2 %d\n", y1, y2);
             }
           printf("x ds while %d\n", x);
           printf("y ds while %d\n", y);
-          mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, x, y + 500, 0xc71515);
+          mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, x - y + 200, (y + x) / 2, 0xc71515);
         }
     }
     else
@@ -168,7 +203,7 @@ printf("y1 %d et y2 %d\n", y1, y2);
                 cumul -= dy;
                 x += xinc;
             }
-            mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, x, y + 500, 0xc71515);
+            mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, x - y + 200, (y + x) / 2, 0xc71515);
         }
       }
   }
@@ -186,11 +221,11 @@ void fdf(t_mlx mlx, t_map *map)
         {
             // if (map[i].point[j+1].x * 20 > map[i].point[j].x * 20)
               if (j != map[0].nbpoints - 1)
-                line_rightup(mlx, map[i].point[j].x * 20 * 0.8,
-              (map[i].point[j].y * 20 * 0.8), (map[i].point[j + 1].x * 20 * 0.8), (map[i].point[j + 1].y * 20 * 0.8));
+                line_rightup(mlx, map[i].point[j].x * 0.8 * 20,
+              (map[i].point[j].y * 0.8 * 20), (map[i].point[j + 1].x * 0.8 * 20), (map[i].point[j + 1].y * 0.8 * 20));
               if (i != map[0].nblignes - 1)
-                line_rightup(mlx, map[i].point[j].x * 20 * 0.8,
-              (map[i].point[j].y * 20 * 0.8), (map[i + 1].point[j].x * 20 * 0.8), (map[i + 1].point[j].y * 20 * 0.8));
+                line_rightup(mlx, map[i].point[j].x * 0.8 * 20,
+              (map[i].point[j].y * 0.8 * 20), (map[i + 1].point[j].x * 0.8 * 20), (map[i + 1].point[j].y * 0.8 * 20));
             // else
             //   line_rightdown(mlx, (map[i].point[j].x * 20 * 0.8) - (i * 20), map[i].point[j].y * 20 * 0.8 + (j * 20),
             //   (map[i].point[j + 1].x * 20 * 0.8) - (i * 20), (map[i].point[j + 1].y * 20 * 0.8) + (j * 20));
@@ -227,6 +262,7 @@ int main(int ac, char **av)
         return (0);
     map = NULL;
     map = ft_open(av[1], map);
+    //test_relief(&map);
     mlx = init_mlx();
     fdf(mlx, map);
     return (0);

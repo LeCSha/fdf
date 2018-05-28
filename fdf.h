@@ -26,7 +26,7 @@ typedef struct mlx_init
     void *win_ptr;
 }              t_mlx;
 
-typedef struct point 
+typedef struct point
 {
     int x;
     int y;
@@ -34,11 +34,11 @@ typedef struct point
     int nbpoints;
 }              t_point;
 
-typedef struct map 
+typedef struct map
 {
     unsigned int nbpoints;
     unsigned int nblignes;
-    t_point *point;    
+    t_point *point;
 }              t_map;
 
 t_map *ft_open(char *av, t_map *map);
