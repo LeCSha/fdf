@@ -116,14 +116,11 @@ t_map *ft_open(char *av, t_map *map)
     int y;
     int dx;
     int dy;
-    int dp;
     int xinc;
     int yinc;
     int cumul;
-    int i;
 printf("x1 %d et x2 %d\n", x1, x2);
 printf("y1 %d et y2 %d\n", y1, y2);
-    i = 0;
     x = x1;
     y = y1;
     dx = x2 - x;
@@ -142,11 +139,12 @@ printf("y1 %d et y2 %d\n", y1, y2);
         {
             x += xinc;
             cumul += dy;
+            printf("cumul + dy %d\n", cumul);
             if (cumul >= dx)
             {
                 cumul -= dx;
                 y += yinc;
-                printf("dp <= 0 %d\n", cumul);
+                printf("cumul > dx %d\n", cumul);
             }
           printf("x ds while %d\n", x);
           printf("y ds while %d\n", y);
@@ -156,12 +154,15 @@ printf("y1 %d et y2 %d\n", y1, y2);
     else
     {
       printf("dx < dy \n");
-
+      printf("y%d \n", y);
+      printf("y1 %d \n", y2);
         cumul = dy / 2;
-        while (y != y1)
+        while (y > y2)
         {
             y += yinc;
+            printf("y + yinc %d \n", y);
             cumul += dx;
+            printf("cumul + dx %d \n", cumul);
             if (cumul >= dy)
             {
                 cumul -= dy;
@@ -246,7 +247,7 @@ void fdf(t_mlx mlx, t_map *map)
         {
             // if (map[i].point[j+1].x * 20 > map[i].point[j].x * 20)
               line_rightup(mlx, map[i].point[j].x * 20 * 0.8 + (i * 20),
-              (map[i].point[j].y * 20 * 0.8) - (j * 20), (map[i].point[j + 1].x * 20 * 0.8) + (i * 20), (map[i].point[j + 1].y * 20 * 0.8) - (j * 20));
+              (map[i].point[j].y * 20 * 0.8) - (j * 20), (map[i].point[j + 1].x * 20 * 0.8) + (i * 20), (map[i].point[j + 1].y * 20 * 0.8) - ((j + 1) * 20));
             // else
             //   line_rightdown(mlx, (map[i].point[j].x * 20 * 0.8) - (i * 20), map[i].point[j].y * 20 * 0.8 + (j * 20),
             //   (map[i].point[j + 1].x * 20 * 0.8) - (i * 20), (map[i].point[j + 1].y * 20 * 0.8) + (j * 20));
