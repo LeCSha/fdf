@@ -157,7 +157,7 @@ printf("y1 %d et y2 %d\n", y1, y2);
       printf("y%d \n", y);
       printf("y1 %d \n", y2);
         cumul = dy / 2;
-        while (y > y2)
+        while (y != y2)
         {
             y += yinc;
             printf("y + yinc %d \n", y);
@@ -173,67 +173,6 @@ printf("y1 %d et y2 %d\n", y1, y2);
       }
   }
 
-// void line_rightdown(t_mlx mlx, int x, int y, int x1, int y1)
-// {
-//       printf("je rentre ds rightDOWN \n");
-
-//   int dx;
-//   int dy;
-//   int dp;
-//   int deltae;
-//   int deltane;
-
-//   dx = abs(x1 - x);
-//   dy = abs(y1 - y);
-//   if (dx >= dy)
-//   {
-//       printf("dx >= dy \n");
-
-//       dp = (2 * dy) - dx;
-//       deltae = 2 * dy;
-//       deltane = 2 * (dy - dx);
-//       while (x < x1)
-//       {
-//         if (dp <= 0)
-//         {
-//             dp += deltae;
-//             x++;
-//         }
-//         else
-//         {
-//             dp += deltane;
-//             x++;
-//             y++;
-//         }
-//       }
-//       mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, x, y + 200, 0xc71515);
-//   }
-//   else
-//   {
-//       printf("dx < dy \n");
-
-//       dp = (2 * dx) - dy;
-//       deltae = 2 * dx;
-//       deltane = 2 * (dx - dy);
-//       while(y < y1)
-//       {
-//         if (dp <= 0)
-//         {
-//             dp += deltae;
-//             y++;
-//         }
-//         else
-//         {
-//             dp += deltane;
-//             x++;
-//             y++;
-//         }
-//       }
-//       mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, x, y + 200, 0xc71515);
-//   }
-
-// }
-
 void fdf(t_mlx mlx, t_map *map)
 {
     unsigned int i;
@@ -247,11 +186,11 @@ void fdf(t_mlx mlx, t_map *map)
         {
             // if (map[i].point[j+1].x * 20 > map[i].point[j].x * 20)
               if (j != map[0].nbpoints - 1)
-                line_rightup(mlx, map[i].point[j].x * 20 * 0.8 + (i * 20),
-              (map[i].point[j].y * 20 * 0.8) - (j * 20), (map[i].point[j + 1].x * 20 * 0.8) + (i * 20), (map[i].point[j + 1].y * 20 * 0.8) - ((j + 1) * 20));
+                line_rightup(mlx, map[i].point[j].x * 20 * 0.8,
+              (map[i].point[j].y * 20 * 0.8), (map[i].point[j + 1].x * 20 * 0.8), (map[i].point[j + 1].y * 20 * 0.8));
               if (i != map[0].nblignes - 1)
-                line_rightup(mlx, map[i].point[j].x * 20 * 0.8 + (i * 20),
-              (map[i].point[j].y * 20 * 0.8) - (j * 20), (map[i + 1].point[j].x * 20 * 0.8) + ((i + 1) * 20), (map[i + 1].point[j].y * 20 * 0.8) - (j * 20));
+                line_rightup(mlx, map[i].point[j].x * 20 * 0.8,
+              (map[i].point[j].y * 20 * 0.8), (map[i + 1].point[j].x * 20 * 0.8), (map[i + 1].point[j].y * 20 * 0.8));
             // else
             //   line_rightdown(mlx, (map[i].point[j].x * 20 * 0.8) - (i * 20), map[i].point[j].y * 20 * 0.8 + (j * 20),
             //   (map[i].point[j + 1].x * 20 * 0.8) - (i * 20), (map[i].point[j + 1].y * 20 * 0.8) + (j * 20));
