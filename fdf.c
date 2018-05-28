@@ -200,7 +200,7 @@ printf("y1 %d et y2 %d\n", y1, y2);
             printf("cumul + dx %d \n", cumul);
             if (cumul >= dy)
             {
-                cumul -= dy;
+                cumul -= dy;  
                 x += xinc;
             }
             mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, x - y + 200, (y + x) / 2, 0xc71515);
