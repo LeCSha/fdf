@@ -12,7 +12,7 @@ t_mlx init_mlx(void)
     t_mlx mlx;
 
     mlx.mlx_ptr = mlx_init();
-    mlx.win_ptr = mlx_new_window(mlx.mlx_ptr, 800, 800, "fdf 42");
+    mlx.win_ptr = mlx_new_window(mlx.mlx_ptr, 1500, 2000, "fdf 42");
     return (mlx);
 }
 t_map *ft_open(char *av, t_map *map)
@@ -129,7 +129,7 @@ printf("y1 %d et y2 %d\n", y1, y2);
     yinc = (dy > 0) ? 1 : -1;
     dx = abs(dx);
     dy = abs(dy);
-    mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, x, y + 200, 0xc71515);
+    mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, x, y + 500, 0xc71515);
     if (dx > dy)
     {
       printf("dx > dy \n");
@@ -148,7 +148,7 @@ printf("y1 %d et y2 %d\n", y1, y2);
             }
           printf("x ds while %d\n", x);
           printf("y ds while %d\n", y);
-          mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, x, y + 200, 0xc71515);
+          mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, x, y + 500, 0xc71515);
         }
     }
     else
@@ -168,7 +168,7 @@ printf("y1 %d et y2 %d\n", y1, y2);
                 cumul -= dy;
                 x += xinc;
             }
-            mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, x, y + 200, 0xc71515);
+            mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, x, y + 500, 0xc71515);
         }
       }
   }
@@ -243,11 +243,15 @@ void fdf(t_mlx mlx, t_map *map)
     while (i < map[0].nblignes)
     {
         j = 0;
-        while (j < map[0].nbpoints - 1)
+        while (j < map[0].nbpoints)
         {
             // if (map[i].point[j+1].x * 20 > map[i].point[j].x * 20)
-              line_rightup(mlx, map[i].point[j].x * 20 * 0.8 + (i * 20),
+              if (j != map[0].nbpoints - 1)
+                line_rightup(mlx, map[i].point[j].x * 20 * 0.8 + (i * 20),
               (map[i].point[j].y * 20 * 0.8) - (j * 20), (map[i].point[j + 1].x * 20 * 0.8) + (i * 20), (map[i].point[j + 1].y * 20 * 0.8) - ((j + 1) * 20));
+              if (i != map[0].nblignes - 1)
+                line_rightup(mlx, map[i].point[j].x * 20 * 0.8 + (i * 20),
+              (map[i].point[j].y * 20 * 0.8) - (j * 20), (map[i + 1].point[j].x * 20 * 0.8) + ((i + 1) * 20), (map[i + 1].point[j].y * 20 * 0.8) - (j * 20));
             // else
             //   line_rightdown(mlx, (map[i].point[j].x * 20 * 0.8) - (i * 20), map[i].point[j].y * 20 * 0.8 + (j * 20),
             //   (map[i].point[j + 1].x * 20 * 0.8) - (i * 20), (map[i].point[j + 1].y * 20 * 0.8) + (j * 20));
