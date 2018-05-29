@@ -15,254 +15,254 @@ t_mlx init_mlx(void)
     mlx.win_ptr = mlx_new_window(mlx.mlx_ptr, 1500, 2000, "fdf 42");
     return (mlx);
 }
-t_map *ft_open(char *av, t_map *map)
-{
-    int fd;
-    char *line;
-    int nblignes;
-    int i;
-    int j;
-    int tmp;
-    // char *tmp;
-    int begin;
-    int iter;
-    int nbpoints;
 
-    i = 0;
-    nbpoints = 0;
-    iter = 0;
-    nblignes = 0;
-    tmp = 0;
-    fd = open(av, O_RDONLY);
-    if (fd == -1)
-        return (0);
-    while (get_next_line(fd, &line) != 0)
+void   init_fdf(t_fdf *fdf, int nbpoint, int nblines)
+{
+    fdf->nblines = nbpoints;
+    fdf->nbpoints = nblines;
+    fdf->scalx = 20;
+    fdf->scaly = 20;
+    fdf->dx = 0;
+    fdf->dy = 0;
+    fdf->startx = 0;
+    fdf->starty = 0;
+    fdf->endx = 0;
+    fdf->endy = 0;
+    fdf->xinc = 0;
+    fdf->yinc = 0;
+    fdf->line = NULL;
+    fdf->ptdepart = 300;
+}
+
+t_fdf count_fdf(int fd)
+{
+    // char *line;
+    int tmp;
+    t_fdf fdf;
+
+    init_fdf(&fdf, 0, 0);
+    // line = NULL;
+    while (get_next_line(fd, &fdf.line) != 0)
     {
-        j = 0;
-        nbpoints = 0;
-        while (line[j] != '\0')
+        while (fdf.line[fdf.xinc] != '\0')
         {
-            if ((line[j] >= '0' && line[j] <= '9') && (line[j+1] == ' ' || line[j+1] == '\0'))
-                nbpoints++;
-            j++;
+            if ((fdf.line[fdf.xinc] >= '0' && fdf.line[fdf.xinc] <= '9') && (fdf.line[fdf.xinc+1] == ' ' || fdf.line[fdf.xinc+1] == '\0'))
+                fdf.nbpoints++;
+            fdf.xinc++;
         }
         if (tmp == 0)
-            tmp = nbpoints;
+            tmp = fdf.nbpoints;
         else
-            if (tmp != nbpoints)
-                return (0);
-
-        nblignes++;
+            if (tmp != fdf.nbpoints)
+                return (exit(1));
+        fdf.nblines++;
+        free(fdf.line);
+        fdf.line = NULL;
     }
-    if (!(map = (t_map*)malloc(sizeof(t_map) * nblignes)))
-        return (NULL);
-    map[0].nblignes = nblignes;
-    map[0].nbpoints = nbpoints;
-    close(fd);
+    if (fdf.line)
+        free(fdf.line);
+    return (fdf);
+}
 
-    fd = open(av, O_RDONLY);
-    if (fd == -1)
-        return (0);
+t_map *read_map(int fd, t_fdf *fdf)
+{
+    // char *line;
+    int iter;
 
-    while (get_next_line(fd, &line) > 0)
+    init_fdf(&fdf, fdf->nbpoints, fdf->nblines);
+    while (get_next_line(fd, &fdf->line) > 0)
     {
-        // printf("%d\n", nbpoints);
-        if (!(map[i].point = (t_point*)malloc(sizeof(t_point) * nbpoints)))
+        if (!(map[fdf->yinc].point = (t_point*)malloc(sizeof(t_point) * nbpoints)))
             return (NULL);
-        j = 0;
-        begin = 0;
+        fdf->xinc = 0;
         iter = 0;
-        while (line[j] != '\0')
+        while (fdf->line[fdf->xinc] != '\0')
         {
-            if ((line[j] >= '0' && line[j] <= '9') || line[j] == '-')
+            if ((fdf->line[fdf->xinc] >= '0' && fdf->line[fdf->xinc] <= '9') || fdf->line[fdf->xinc] == '-')
             {
-                if (line[j+1] >= '0' && line[j+1] <= '9')
+                if (fdf->line[fdf->xinc+1] >= '0' && fdf->line[fdf->xinc+1] <= '9')
                 {
-                    begin = j;
-
-                    while ((line[j] >= '0' && line[j] <= '9' )|| line[j] == '-')
-                        j++;
-                    // tmp = ft_strsub(line, begin, j);
-                    // printf("%d\n", iter);
-                    map[i].point[iter].z = ft_atoi(ft_strsub(line, begin, j));
-                    map[i].point[iter].x = iter;
-                    map[i].point[iter].y = i;
-                    // free(tmp);
-                    // printf("nb valeur du point n'%d de la ligne n'%i : %i\n", iter, i, map[i].point[iter].z);
+                    fdf->startx = fdf->xinc;
+                    while ((fdf->line[fdf->xinc] >= '0' && fdf->line[fdf->xinc] <= '9' )|| fdf->line[fdf->xinc] == '-')
+                        fdf->xinc++;
+                    map[fdf->yinc].point[iter].z = ft_atoi(ft_strsub(fdf->line, fdf->startx, fdf->xinc));
+                    map[fdf->yinc].point[iter].x = iter;
+                    map[fdf->yinc].point[iter].y = fdf->yinc;
                 }
                 else{
-                    map[i].point[iter].z = ft_atoi(&line[j]);
-                    map[i].point[iter].x = iter;
-                    map[i].point[iter].y = i;
-                    // printf("chiffre valeur du point n'%d de la ligne n'%i : %i\n", iter, i, map[i].point[iter].z);
-                }
+                    map[fdf->yinc].point[iter].z = ft_atoi(&fdf->line[fdf->xinc]);
+                    map[fdf->yinc].point[iter].x = iter;
+                    map[fdf->yinc].point[iter].y = fdf->yinc;
+                    }
                 iter++;
             }
-            j++;
+            fdf->xinc++;
         }
-        // free(line);
-        i++;
-        if (line != NULL)
-            free(line);
+        fdf->yinc++;
+        free(fdf->line);
+        fdf->line = NULL;
     }
+    if (fdf->line)
+        free(fdf->line);
+    return (map);
+}
+
+t_map *ft_open(char *av, t_map *map, t_fdf *fdf)
+{
+    int fd;
+    t_map *map;
+
+    if (!(fd = open(av, O_RDONLY)))
+        exit(1);
+    else
+        fdf = count_fdf(fd);
+    if (!(map = (t_map*)malloc(sizeof(t_map) * fdf.nblines)))
+        return (NULL);
+    close(fd);
+    if (!(fd = open(av, O_RDONLY)))
+        exit(1); 
+    else
+        map = read_fdf(fd);
     close(fd);
     return (map);
 }
 
-int coord_x(int x, int y)
+void    go_trace_it(t_fdf *fdf)
 {
-  return (850 - (y * 20) + (x * 20));
-}
-
-int   coord_y(int x, int y, int z)
-{
-  if (z > 30000)
-    z = 30000;
-  if (z < -30000)
-    z = -30000;
-  return (50 + (20 * x) + (20 * y) - (z * 2));
-}
-
-void test_relief(t_map **map)
-{
-  unsigned int i;
-  unsigned int j;
-
-  i = 0;
-  while (i < map[0]->nblignes)
-  {
-    printf("je rentre ds test relief \n");
-    j = 0;
-    while (j < map[0]->nbpoints)
+    int ratio;
+    int rigthleft;
+    int updown;
+    int i;
+    
+    i = 0;
+    mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, fdf->startx, fdf->starty, 0xc71515);
+    if (fdf->dx > fdf->dy)
     {
-        map[i]->point[j].x = coord_x(j, i);
-        printf(" x ap coor_x %d\n", map[i]->point[j].x);
-        map[i]->point[j].y = coord_y(j, i, map[i]->point[j].z);
-        printf(" y ap coor_y %d\n", map[i]->point[j].y);
-      j++;
-    }
-    i++;
-  }
-}
-  void line_rightup(t_mlx mlx, int x1, int y1, int x2, int y2)
-  {
-      printf("je rentre ds rightUP \n");
-    int x;
-    int y;
-    int dx;
-    int dy;
-    int xinc;
-    int yinc;
-    int cumul;
-printf("x1 %d et x2 %d\n", x1, x2);
-printf("y1 %d et y2 %d\n", y1, y2);
-    x = x1;
-    y = y1;
-    dx = x2 - x;
-    dy = y2 - y;
-    xinc = (dx > 0) ? 1 : -1;
-    yinc = (dy > 0) ? 1 : -1;
-    dx = abs(dx);
-    dy = abs(dy);
-    mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, x - y + 200, (y + x) / 2, 0xc71515);
-    if (dx > dy)
-    {
-      printf("dx > dy \n");
-      printf("dx %d et dy %d\n", dx, dy);
-        cumul = dx / 2;
-        while (x != x2)
+        ratio = (2 * fdf->dy) - fdf->dx;
+        updown = 2 * (fdf->dy - fdf->dx);
+        rigthleft = 2 * fdf->dy;
+        while(i < fdf->dx)
         {
-            x += xinc;
-            cumul += dy;
-            printf("cumul + dy %d\n", cumul);
-            if (cumul >= dx)
+            if (ratio >= 0)
             {
-                cumul -= dx;
-                y += yinc;
-                printf("cumul > dx %d\n", cumul);
+                ratio += updown;
+                fdf->starty = fdf->starty + fdf->yinc;
             }
-          printf("x ds while %d\n", x);
-          printf("y ds while %d\n", y);
-          mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, x - y + 200, (y + x) / 2, 0xc71515);
+            else
+                ratio += rigthleft;
+            fdf->startx = fdf->startx + fdf->xinc;
+            mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, fdf->startx, fdf->starty, 0xc71515);
+            i++;
         }
     }
     else
     {
-      printf("dx < dy \n");
-      printf("y%d \n", y);
-      printf("y1 %d \n", y2);
-        cumul = dy / 2;
-        while (y != y2)
+        ratio = (2 * fdf->dx) - fdf->dy;
+        rigthleft = 2 * (fdf->dx - fdf->dy);
+        updown = 2 * fdf->dx;
+        while(i < fdf->dy)
         {
-            y += yinc;
-            printf("y + yinc %d \n", y);
-            cumul += dx;
-            printf("cumul + dx %d \n", cumul);
-            if (cumul >= dy)
+            if (ratio >= 0)
             {
-                cumul -= dy;  
-                x += xinc;
+                ratio += rigthleft;
+                fdf->startx = fdf->startx + fdf->xinc;
             }
-            mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, x - y + 200, (y + x) / 2, 0xc71515);
+            else
+                ratio += updown;
+            fdf->starty = fdf->starty + fdf->yinc;
+            mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, fdf->startx, fdf->starty, 0xc71515);
+            i++;
         }
-      }
-  }
+    }
+}
 
-void fdf(t_mlx mlx, t_map *map)
+void    draw_base_line(t_fdf *fdf)
 {
-    unsigned int i;
-    unsigned int j;
+    fdf->dx = fdf->endx - fdf->startx;
+    fdf->dy = fdf->endy - fdf->starty;
+    fdf->xinc = (fdf->dx > 0) ? 1 : -1;
+    fdf->yinc = (fdf->dy > 0) ? 1 : -1;
+    fdf->dx = abs(fdf->dx);
+    fdf->dy = abs(fdf->dy);
+    go_trace_it(fdf);
+}
+
+int coord_x(t_fdf *fdf, int x, int y)
+{
+    return (fdf->ptdepart + (fdf->scalx * y) + (fdf->scalx * x));
+}
+int coord_y(t_fdf *fdf, int x, int y, int z)
+{
+	return (fdf->ptdepart + fdf->starty + ((fdf->scaly) * x) + ((fdf->scaly) * y) - (z * 2));
+}
+
+void    calc_horizontal_x(t_fdf *fdf, t_map *map)
+{
+    int i;
+    int j;
 
     i = 0;
-    while (i < map[0].nblignes)
+    j = 0;
+    init_fdf(&fdf);
+    while (i < fdf->nblines)
     {
         j = 0;
-        while (j < map[0].nbpoints)
+        while (j < fdf->nbpoints - 1)
         {
-            // if (map[i].point[j+1].x * 20 > map[i].point[j].x * 20)
-              if (j != map[0].nbpoints - 1)
-                line_rightup(mlx, map[i].point[j].x * 0.8 * 20,
-              (map[i].point[j].y * 0.8 * 20), (map[i].point[j + 1].x * 0.8 * 20), (map[i].point[j + 1].y * 0.8 * 20));
-              if (i != map[0].nblignes - 1)
-                line_rightup(mlx, map[i].point[j].x * 0.8 * 20,
-              (map[i].point[j].y * 0.8 * 20), (map[i + 1].point[j].x * 0.8 * 20), (map[i + 1].point[j].y * 0.8 * 20));
-            // else
-            //   line_rightdown(mlx, (map[i].point[j].x * 20 * 0.8) - (i * 20), map[i].point[j].y * 20 * 0.8 + (j * 20),
-            //   (map[i].point[j + 1].x * 20 * 0.8) - (i * 20), (map[i].point[j + 1].y * 20 * 0.8) + (j * 20));
-            // seg = 0;
-            // while (seg < 19)
-            // {
-            //   if (map->point[map[0].nbpoints - 1].x > map->point[j].x)
-            //     line_rightup(mlx, map[i].point[j].x * 20, map[i].point[j].y * 20, map[i].point[map[0].nbpoints - 1].x * 20, map[i].point[map[0].nbpoints - 1].y * 20, i, j);
-            //   else
-            //     line_rightdown(mlx, map[i].point[j].x * 20, map[i].point[j].y * 20, map[i].point[map[0].nbpoints - 1].x * 20, map[i].point[map[0].nbpoints - 1].y * 20, i, j);
-            //   seg++;
-            // }
-            //mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, (map[i].point[j].x * 0.8 * 20) + i * 20, (map[i].point[j].y * 20 * 0.8 + 200) - j * 20, 0xc71515);
-            // if (j != map[0].nbpoints - 1)
-            //     for (int v = 0; v < 20; v++)
-            //         mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, ((map[i].point[j].x * 0.8) * 20 + v + 200) + i * 20, (map[i].point[j].y * 0.8 * 20 + v + 200) - j * 20, 0xc71515);
-            // if (i != map[0].nblignes - 1)
-            //     for (unsigned int z = 0; z < 20; z++)
-            //         mlx_pixel_put(mlx.mlx_ptr, mlx.win_ptr, ((map[i].point[j].x * 0.8) * 20 + 200) + (i * 20), (map[i].point[j].y * 0.8 * 20 + z + 200) - (j * 20), 0xc71515);
+            fdf->startx = coord_x(fdf, j, i);
+            fdf->starty = coord_y(fdf, j, i, map[i]->point[j].z);
+            fdf->endx = coord_x(fdf, j + 1, i);
+            fdf->endy = coord_y(fdf, j + 1, i, map[i]->point[j].z);
+            draw_base_line(fdf);
             j++;
         }
         i++;
     }
+}
 
+void    calc_vertical_y(t_fdf *fdf, t_map *map)
+{
+    int i;
+    int j;
+
+    i = 0;
+    j = 0;
+    init_fdf(&fdf);
+    while (i < fdf->nblines)
+    {
+        j = 0;
+        while (j < fdf->nbpoints - 1)
+        {
+            fdf->startx = coord_x(fdf, j, i);
+            fdf->starty = coord_y(fdf, j, i, map[i]->point[j].z);
+            fdf->endx = coord_x(fdf, j, i + 1);
+            fdf->endy = coord_y(fdf, j, i + 1, map[i]->point[j].z);
+            draw_base_line(fdf);
+            j++;
+        }
+        i++;
+    }    
+}
+
+void fdf(t_mlx mlx, t_map *map)
+{
+    calc_horizontal_x(&fdf, map);
+    calc_vertical_y(&fdf, map);
     mlx_loop(mlx.mlx_ptr);
+}
+
 
 }
 int main(int ac, char **av)
 {
     t_mlx mlx;
     t_map *map;
+    t_fdf fdf;
     // int *tab;
     if (ac != 2)
         return (0);
     map = NULL;
-    map = ft_open(av[1], map);
-    //test_relief(&map);
+    map = ft_open(av[1], map, &fdf);
     mlx = init_mlx();
     fdf(mlx, map);
     return (0);

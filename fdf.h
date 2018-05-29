@@ -20,25 +20,40 @@
 # include "minilibx/mlx.h"
 # include "libft/libft.h"
 
-typedef struct mlx_init
+typedef struct mlx
 {
     void *mlx_ptr;
     void *win_ptr;
 }              t_mlx;
 
-typedef struct point
+typedef struct fdf
+{
+    int nbpoints;
+    int nblines;
+    int dx;
+    int dy;
+    int scalx;
+    int scaly;
+    int startx;
+    int starty;
+    int endx;
+    int endy;
+    int xinc;
+    int yinc;
+    char *line;
+    int ptdepart;
+}              t_fdf;
+
+typedef struct point 
 {
     int x;
     int y;
     int z;
-    int nbpoints;
 }              t_point;
 
-typedef struct map
+typedef struct map 
 {
-    unsigned int nbpoints;
-    unsigned int nblignes;
-    t_point *point;
+    t_point *point;    
 }              t_map;
 
 t_map *ft_open(char *av, t_map *map);
