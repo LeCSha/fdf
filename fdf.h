@@ -20,14 +20,10 @@
 # include "minilibx/mlx.h"
 # include "libft/libft.h"
 
-typedef struct mlx
+typedef struct fdf
 {
     void *mlx_ptr;
     void *win_ptr;
-}              t_mlx;
-
-typedef struct fdf
-{
     int nbpoints;
     int nblines;
     int dx;
@@ -44,19 +40,18 @@ typedef struct fdf
     int ptdepart;
 }              t_fdf;
 
-typedef struct point 
+typedef struct point
 {
     int x;
     int y;
     int z;
 }              t_point;
 
-typedef struct map 
+typedef struct map
 {
-    t_point *point;    
+    t_point *point;
 }              t_map;
 
-t_map *ft_open(char *av, t_map *map);
-void fdf(t_mlx mlx, t_map *map);
-t_mlx init_mlx();
+void fdf(char *av, t_fdf *fdf);
+
 #endif
