@@ -8,15 +8,8 @@
 // }
 
 
-void init_fdf(t_fdf *fdf, int nbpoints, int nblines)
+void init_fdf(t_fdf *fdf)
 {
-    if (fdf->win_ptr == NULL || fdf->mlx_ptr == NULL)
-    {
-      fdf->mlx_ptr = mlx_init();
-      fdf->win_ptr = mlx_new_window(fdf->mlx_ptr, 1500, 2000, "fdf 42");
-    }
-    fdf->nblines = nbpoints;
-    fdf->nbpoints = nblines;
     fdf->scalx = 20;
     fdf->scaly = 20;
     fdf->dx = 0;
@@ -32,11 +25,10 @@ void init_fdf(t_fdf *fdf, int nbpoints, int nblines)
 
 void  count_fdf(int fd, t_fdf *fdf)
 {
-     char *line;
+    char *line;
     int tmp;
 
     tmp = 0;
-    init_fdf(&(*fdf), 0, 0);
     line = NULL;
     printf("%d\n", fd);
     while (get_next_line(fd, &line) != 0)
@@ -56,7 +48,7 @@ void  count_fdf(int fd, t_fdf *fdf)
             if (tmp != fdf->nbpoints)
                 printf("NO WAYYY\n");
         fdf->nblines++;
-        free(fdf->line);
+        free(line);
         line = NULL;
     }
     printf("%d\n", fdf->nblines);
@@ -70,7 +62,6 @@ t_map *read_map(int fd, t_fdf *fdf)
     int iter;
     t_map *map;
 
-    init_fdf(&(*fdf), fdf->nbpoints, fdf->nblines);
     if (!(map = (t_map*)malloc(sizeof(t_map) * fdf->nblines)))
         return (NULL);
   //line = NULL;
@@ -146,11 +137,11 @@ void    go_trace_it(t_fdf *fdf)
         {
             if (ratio >= 0)
             {
-                ratio += updown;
+                ratio = ratio + updown;
                 fdf->starty = fdf->starty + fdf->yinc;
             }
             else
-                ratio += rigthleft;
+                ratio = ratio + rigthleft;
             fdf->startx = fdf->startx + fdf->xinc;
             mlx_pixel_put(fdf->mlx_ptr, fdf->win_ptr, fdf->startx, fdf->starty, 0xc71515);
             i++;
@@ -165,11 +156,11 @@ void    go_trace_it(t_fdf *fdf)
         {
             if (ratio >= 0)
             {
-                ratio += rigthleft;
+                ratio = ratio + rigthleft;
                 fdf->startx = fdf->startx + fdf->xinc;
             }
             else
-                ratio += updown;
+                ratio = ratio + updown;
             fdf->starty = fdf->starty + fdf->yinc;
             mlx_pixel_put(fdf->mlx_ptr, fdf->win_ptr, fdf->startx, fdf->starty, 0xc71515);
             i++;
@@ -185,16 +176,16 @@ void    draw_base_line(t_fdf *fdf)
     fdf->yinc = (fdf->dy > 0) ? 1 : -1;
     fdf->dx = abs(fdf->dx);
     fdf->dy = abs(fdf->dy);
-    go_trace_it(fdf);
+    go_trace_it(&(*fdf));
 }
 
 int coord_x(t_fdf *fdf, int x, int y)
 {
-    return (fdf->ptdepart + (fdf->scalx * y) + (fdf->scalx * x));
+    return (fdf->ptdepart + (fdf->scalx * x) - (fdf->scalx * y));
 }
 int coord_y(t_fdf *fdf, int x, int y, int z)
 {
-	return (fdf->ptdepart + fdf->starty + ((fdf->scaly) * x) + ((fdf->scaly) * y) - (z * 2));
+	return (fdf->ptdepart + (((fdf->scaly) * x) + ((fdf->scaly) * y) / 2) - (z * 2));
 }
 
 void    calc_horizontal_x(t_fdf *fdf, t_map *map)
@@ -204,7 +195,6 @@ void    calc_horizontal_x(t_fdf *fdf, t_map *map)
 
     i = 0;
     j = 0;
-    init_fdf(&(*fdf), fdf->nbpoints, fdf->nblines);
     while (i < fdf->nblines)
     {
         j = 0;
@@ -213,8 +203,8 @@ void    calc_horizontal_x(t_fdf *fdf, t_map *map)
             fdf->startx = coord_x(fdf, j, i);
             fdf->starty = coord_y(fdf, j, i, map[i].point[j].z);
             fdf->endx = coord_x(fdf, j + 1, i);
-            fdf->endy = coord_y(fdf, j + 1, i, map[i].point[j].z);
-            draw_base_line(fdf);
+            fdf->endy = coord_y(fdf, j + 1, i, map[i].point[j + 1].z);
+            draw_base_line(&(*fdf));
             j++;
         }
         i++;
@@ -228,7 +218,6 @@ void    calc_vertical_y(t_fdf *fdf, t_map *map)
 
     i = 0;
     j = 0;
-    init_fdf(&(*fdf), fdf->nbpoints, fdf->nblines);
     while (i < fdf->nblines - 1)
     {
         j = 0;
@@ -237,7 +226,7 @@ void    calc_vertical_y(t_fdf *fdf, t_map *map)
             fdf->startx = coord_x(fdf, j, i);
             fdf->starty = coord_y(fdf, j, i, map[i].point[j].z);
             fdf->endx = coord_x(fdf, j, i + 1);
-            fdf->endy = coord_y(fdf, j, i + 1, map[i].point[j].z);
+            fdf->endy = coord_y(fdf, j, i + 1, map[i + 1].point[j].z);
             draw_base_line(fdf);
             j++;
         }
@@ -252,6 +241,9 @@ int main(int ac, char **av)
 
     if (ac != 2)
         return (0);
+    fdf.mlx_ptr = mlx_init();
+    fdf.win_ptr = mlx_new_window(fdf.mlx_ptr, 1500, 2000, "fdf 42");
+    init_fdf(&fdf);
     map = ft_open(av[1], &fdf);
     calc_horizontal_x(&fdf, map);
     calc_vertical_y(&fdf, map);
