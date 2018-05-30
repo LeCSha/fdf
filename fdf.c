@@ -8,6 +8,7 @@
 // }
 
 
+
 void init_fdf(t_fdf *fdf)
 {
     fdf->scalx = 20;
@@ -21,6 +22,7 @@ void init_fdf(t_fdf *fdf)
     fdf->xinc = 0;
     fdf->yinc = 0;
     fdf->ptdepart = 300;
+    fdf->nblines = 0;
 }
 
 void  count_fdf(int fd, t_fdf *fdf)
@@ -30,10 +32,10 @@ void  count_fdf(int fd, t_fdf *fdf)
 
     tmp = 0;
     line = NULL;
-    printf("%d\n", fd);
+    printf("fd : %d\n", fd);
     while (get_next_line(fd, &line) != 0)
     {
-      printf("%s\n", line);
+      //printf("line en rentrant ds gnl de count : %s\n", line);
         fdf->xinc = 0;
         fdf->nbpoints = 0;
         while (line[fdf->xinc] != '\0')
@@ -46,17 +48,18 @@ void  count_fdf(int fd, t_fdf *fdf)
             tmp = fdf->nbpoints;
         else
             if (tmp != fdf->nbpoints)
-                printf("NO WAYYY\n");
+               ;// printf("NO WAYYY\n");
         fdf->nblines++;
+        printf("nblines : %d\n", fdf->nblines);
         free(line);
         line = NULL;
     }
-    printf("%d\n", fdf->nblines);
+    printf("nb lines %d\n", fdf->nblines);
     if (line)
         free(line);
 }
 
-t_map *read_map(int fd, t_fdf *fdf)
+t_map    *read_map(int fd, t_fdf *fdf)
 {
     char *line;
     int iter;
@@ -64,14 +67,14 @@ t_map *read_map(int fd, t_fdf *fdf)
 
     if (!(map = (t_map*)malloc(sizeof(t_map) * fdf->nblines)))
         return (NULL);
-  //line = NULL;
+    line = NULL;
     while (get_next_line(fd, &line) > 0)
     {
         if (!(map[fdf->yinc].point = (t_point*)malloc(sizeof(t_point) * fdf->nbpoints)))
             return (NULL);
         fdf->xinc = 0;
         iter = 0;
-        printf("%s\n", line);
+        printf("LINE DS READ %s\n", line);
         while (line[fdf->xinc] != '\0')
         {
             if ((line[fdf->xinc] >= '0' && line[fdf->xinc] <= '9') || line[fdf->xinc] == '-')
@@ -82,13 +85,9 @@ t_map *read_map(int fd, t_fdf *fdf)
                     while ((line[fdf->xinc] >= '0' && line[fdf->xinc] <= '9' )|| line[fdf->xinc] == '-')
                         fdf->xinc++;
                     map[fdf->yinc].point[iter].z = ft_atoi(ft_strsub(line, fdf->startx, fdf->xinc));
-                    printf("%d\n", map[fdf->yinc].point[iter].z);
+                    // printf("%d\n", map[fdf->yinc].point[iter].z);
                 }
                 else{
-                    printf("lettre %c\n", line[fdf->xinc]);
-                    printf("fdf->xinc %d\n", fdf->xinc);
-                    printf("iter %d\n", iter);
-                    printf("fdf->yinc %d\n", fdf->yinc);
                     map[fdf->yinc].point[iter].z = ft_atoi(&line[fdf->xinc]);
                     }
                 iter++;
@@ -104,12 +103,11 @@ t_map *read_map(int fd, t_fdf *fdf)
     return (map);
 }
 
-t_map *ft_open(char *av, t_fdf *fdf)
+t_map  *ft_open(char *av, t_fdf *fdf)
 {
     int fd;
     t_map *map;
 
-    map = NULL;
     fd = open(av, O_RDONLY);
     count_fdf(fd, &(*fdf));
     close(fd);
@@ -215,7 +213,7 @@ void    calc_vertical_y(t_fdf *fdf, t_map *map)
 {
     int i;
     int j;
-
+    
     i = 0;
     j = 0;
     while (i < fdf->nblines - 1)
@@ -223,6 +221,7 @@ void    calc_vertical_y(t_fdf *fdf, t_map *map)
         j = 0;
         while (j < fdf->nbpoints)
         {
+            printf("z ds verrt y %d\n", map[i].point[j].z);
             fdf->startx = coord_x(fdf, j, i);
             fdf->starty = coord_y(fdf, j, i, map[i].point[j].z);
             fdf->endx = coord_x(fdf, j, i + 1);
@@ -238,15 +237,20 @@ int main(int ac, char **av)
 {
     t_fdf fdf;
     t_map *map;
-
+    
+    map = NULL;
     if (ac != 2)
-        return (0);
+    return (0);
     fdf.mlx_ptr = mlx_init();
     fdf.win_ptr = mlx_new_window(fdf.mlx_ptr, 1500, 2000, "fdf 42");
     init_fdf(&fdf);
     map = ft_open(av[1], &fdf);
-    calc_horizontal_x(&fdf, map);
-    calc_vertical_y(&fdf, map);
+    printf("coucou\n");
+    printf("z ds horizon x %d\n", map[5].point[5].z);
+    printf("coucou\n");
+    
+    calc_horizontal_x(&fdf, &(*map));
+    calc_vertical_y(&fdf, &(*map));
     mlx_loop(fdf.mlx_ptr);
     return (0);
 }

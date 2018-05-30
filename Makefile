@@ -42,4 +42,7 @@ fclean:clean
 	make -C $(LIBFT) fclean
 	rm -f $(NAME)
 
+lldb:
+	$(CC) -g $(SRCS) ./libft/*.c -I ./libft/ -I ./ -L$(MLX) -lmlx $(FRK) $(OPEN) $(FRK) $(APPK) -o fdf
+
 re:fclean all
