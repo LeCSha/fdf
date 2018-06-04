@@ -11,19 +11,19 @@ void    zoom_fdf(int key, t_fdf *fdf)
 {
     if (key == 69)
     {
-        fdf->scalx += 1;
-        fdf->scaly += 1;
+        fdf->scalx += 0.5;
+        fdf->scaly += 0.5;
         mlx_clear_window(fdf->mlx_ptr, fdf->win_ptr);
-        calc_horizontal_x(&fdf, &(*map));
-        calc_vertical_y(&fdf, &(*map));
+        calc_horizontal_x(&(*fdf));
+        calc_vertical_y(&(*fdf));
     }
     else
     {
-        fdf->scalx -= 1;
-        fdf->scaly -= 1;
+        fdf->scalx -= 0.5;
+        fdf->scaly -= 0.5;
         mlx_clear_window(fdf->mlx_ptr, fdf->win_ptr);
-        calc_horizontal_x(&fdf, &(*map));
-        calc_vertical_y(&fdf, &(*map));
+        calc_horizontal_x(&(*fdf));
+        calc_vertical_y(&(*fdf));
     }
 }
 
@@ -33,6 +33,7 @@ int   key_fdf(int key, t_fdf *fdf)
         exit_fdf(fdf);
     if (key == 78 || key == 69)
         zoom_fdf(key, &(*fdf));
-
+    // if (key == 76)
+    //     color_fdf(&(*fdf));
     return (0);
 }

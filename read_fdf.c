@@ -34,14 +34,13 @@ t_map    *read_map(int fd, t_fdf *fdf)
 {
     char *line;
     int iter;
-    t_map *map;
 
-    if (!(map = (t_map*)malloc(sizeof(t_map) * fdf->nblines)))
+    if (!(fdf->map = (t_map*)malloc(sizeof(t_map) * fdf->nblines)))
         return (NULL);
     line = NULL;
     while (get_next_line(fd, &line) > 0)
     {
-        if (!(map[fdf->yinc].point = (t_point*)malloc(sizeof(t_point) * fdf->nbpoints)))
+        if (!(fdf->map[fdf->yinc].point = (t_point*)malloc(sizeof(t_point) * fdf->nbpoints)))
             return (NULL);
         fdf->xinc = 0;
         iter = 0;
@@ -54,10 +53,10 @@ t_map    *read_map(int fd, t_fdf *fdf)
                     fdf->startx = fdf->xinc;
                     while ((line[fdf->xinc] >= '0' && line[fdf->xinc] <= '9' )|| line[fdf->xinc] == '-')
                         fdf->xinc++;
-                    map[fdf->yinc].point[iter].z = ft_atoi(ft_strsub(line, fdf->startx, fdf->xinc));
+                    fdf->map[fdf->yinc].point[iter].z = ft_atoi(ft_strsub(line, fdf->startx, fdf->xinc));
                 }
                 else{
-                    map[fdf->yinc].point[iter].z = ft_atoi(&line[fdf->xinc]);
+                    fdf->map[fdf->yinc].point[iter].z = ft_atoi(&line[fdf->xinc]);
                     }
                 iter++;
             }
@@ -69,7 +68,7 @@ t_map    *read_map(int fd, t_fdf *fdf)
     }
     if (line)
         free(line);
-    return (map);
+    return (fdf->map);
 }
 
 t_map  *ft_open(char *av, t_fdf *fdf)
@@ -83,5 +82,5 @@ t_map  *ft_open(char *av, t_fdf *fdf)
     fd = open(av, O_RDONLY);
     map = read_map(fd, &(*fdf));
     close(fd);
-    return (map);
+    return (fdf->map);
 }

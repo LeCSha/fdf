@@ -18,7 +18,7 @@ MLX = ./minilibx
 FRK = -framework
 OPEN = OpenGL
 APPK = AppKit
-SRCS = fdf.c read_fdf.c keycode_fdf.c
+SRCS = fdf.c read_fdf.c draw_fdf.c keycode_fdf.c
 OBJS = ${SRCS:.c=.o}
 
 .PHONY:clean fclean
