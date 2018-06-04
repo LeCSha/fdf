@@ -12,13 +12,13 @@
 
 NAME = fdf
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -fsanitize=address -g
+CFLAGS = -Wall -Wextra -Werror
 LIBFT = ./libft
 MLX = ./minilibx
 FRK = -framework
 OPEN = OpenGL
 APPK = AppKit
-SRCS = fdf.c 
+SRCS = fdf.c read_fdf.c keycode_fdf.c
 OBJS = ${SRCS:.c=.o}
 
 .PHONY:clean fclean

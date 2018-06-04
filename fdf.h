@@ -28,8 +28,8 @@ typedef struct fdf
     int nblines;
     int dx;
     int dy;
-    int scalx;
-    int scaly;
+    double scalx;
+    double scaly;
     int startx;
     int starty;
     int endx;
@@ -52,6 +52,10 @@ typedef struct map
     t_point *point;
 }              t_map;
 
-void fdf(char *av, t_fdf *fdf);
+void    fdf(char *av, t_fdf *fdf);
+void    count_fdf(int fd, t_fdf *fdf);
+t_map   *read_map(int fd, t_fdf *fdf);
+t_map   *ft_open(char *av, t_fdf *fdf);
+int     key_fdf(int key, t_fdf *fdf);
 
 #endif
