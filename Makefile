@@ -18,14 +18,14 @@ MLX = ./minilibx
 FRK = -framework
 OPEN = OpenGL
 APPK = AppKit
-SRCS = fdf.c read_fdf.c draw_fdf.c keycode_fdf.c
+SRCS = fdf.c read_fdf.c draw_fdf.c keycode_fdf.c random_color.c
 OBJS = ${SRCS:.c=.o}
 
 .PHONY:clean fclean
 
 all: $(NAME)
 
-%.o:%.c 
+%.o:%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(NAME):$(OBJS)

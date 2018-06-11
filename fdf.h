@@ -17,6 +17,8 @@
 # include <stdlib.h>
 # include <fcntl.h>
 # include <stdio.h>
+# include <time.h>
+# include <limits.h>
 # include "minilibx/mlx.h"
 # include "libft/libft.h"
 typedef struct point
@@ -47,7 +49,8 @@ typedef struct fdf
 	int yinc;
 	char *line;
 	int ptdepart;
-	int color[3];
+	int seed;
+	unsigned int color;
 	t_map *map;
 }              t_fdf;
 
@@ -63,6 +66,10 @@ int     coord_x(t_fdf *fdf, int x, int y);
 int     coord_y(t_fdf *fdf, int x, int y, int z);
 void    go_trace_it(t_fdf *fdf);
 void    draw_base_line(t_fdf *fdf);
-int fdf_random();
+unsigned int			fdf_random();
+int			int_to_color(unsigned int color);
+//int convert_nb(char c);
+//int power(int nb, int tpower);
+//int *char_to_int(char *rgb);
 
 #endif

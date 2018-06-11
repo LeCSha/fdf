@@ -6,9 +6,11 @@ void    go_trace_it(t_fdf *fdf)
     int rigthleft;
     int updown;
     int i;
+    long int color;
 
     i = 0;
-    mlx_pixel_put(fdf->mlx_ptr, fdf->win_ptr, fdf->startx, fdf->starty, 0xCC0066);
+    color = int_to_color(fdf_random());
+    mlx_pixel_put(fdf->mlx_ptr, fdf->win_ptr, fdf->startx, fdf->starty, color);
     if (fdf->dx > fdf->dy)
     {
         ratio = (2 * fdf->dy) - fdf->dx;
@@ -24,7 +26,7 @@ void    go_trace_it(t_fdf *fdf)
             else
                 ratio = ratio + rigthleft;
             fdf->startx = fdf->startx + fdf->xinc;
-            mlx_pixel_put(fdf->mlx_ptr, fdf->win_ptr, fdf->startx, fdf->starty, 0xCC0066);
+            mlx_pixel_put(fdf->mlx_ptr, fdf->win_ptr, fdf->startx, fdf->starty, color);
             i++;
         }
     }
@@ -43,7 +45,7 @@ void    go_trace_it(t_fdf *fdf)
             else
                 ratio = ratio + updown;
             fdf->starty = fdf->starty + fdf->yinc;
-            mlx_pixel_put(fdf->mlx_ptr, fdf->win_ptr, fdf->startx, fdf->starty, 0xCC0066);
+            mlx_pixel_put(fdf->mlx_ptr, fdf->win_ptr, fdf->startx, fdf->starty, color);
             i++;
         }
     }
@@ -96,7 +98,7 @@ void    calc_vertical_y(t_fdf *fdf)
 {
     int i;
     int j;
-    
+
     i = 0;
     j = 0;
     while (i < fdf->nblines - 1)
