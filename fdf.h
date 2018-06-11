@@ -47,7 +47,7 @@ typedef struct fdf
 	int yinc;
 	char *line;
 	int ptdepart;
-	int color;
+	int color[3];
 	t_map *map;
 }              t_fdf;
 
@@ -63,5 +63,6 @@ int     coord_x(t_fdf *fdf, int x, int y);
 int     coord_y(t_fdf *fdf, int x, int y, int z);
 void    go_trace_it(t_fdf *fdf);
 void    draw_base_line(t_fdf *fdf);
+int fdf_random();
 
 #endif

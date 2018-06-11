@@ -82,5 +82,6 @@ t_map  *ft_open(char *av, t_fdf *fdf)
     fd = open(av, O_RDONLY);
     map = read_map(fd, &(*fdf));
     close(fd);
+    printf("coucou");
     return (fdf->map);
 }
