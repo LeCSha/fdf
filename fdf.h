@@ -49,10 +49,16 @@ typedef struct fdf
 	int yinc;
 	char *line;
 	int ptdepart;
+	int ptXdepart;
+	int ptYdepart;
+	int xwin;
+	int ywin;
 	int seed;
 	unsigned int color;
 	t_map *map;
 }              t_fdf;
+
+typedef
 
 
 void    fdf(char *av, t_fdf *fdf);
@@ -60,13 +66,13 @@ void    count_fdf(int fd, t_fdf *fdf);
 t_map   *read_map(int fd, t_fdf *fdf);
 t_map   *ft_open(char *av, t_fdf *fdf);
 int     key_fdf(int key, t_fdf *fdf);
-void    calc_horizontal_x(t_fdf *fdf);
-void    calc_vertical_y(t_fdf *fdf);
+void    calc_horizontal_x(t_fdf *fdf, int color);
+void    calc_vertical_y(t_fdf *fdf, int color);
 int     coord_x(t_fdf *fdf, int x, int y);
 int     coord_y(t_fdf *fdf, int x, int y, int z);
-void    go_trace_it(t_fdf *fdf);
-void    draw_base_line(t_fdf *fdf);
-unsigned int			fdf_random();
+void    go_trace_it(t_fdf *fdf, int color);
+void    draw_base_line(t_fdf *fdf, int color);
+unsigned int			fdf_random(int seed);
 int			int_to_color(unsigned int color);
 //int convert_nb(char c);
 //int power(int nb, int tpower);

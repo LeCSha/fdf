@@ -19,24 +19,26 @@ void init_fdf(t_fdf *fdf)
     fdf->endy = 0;
     fdf->xinc = 0;
     fdf->yinc = 0;
-    fdf->ptdepart = 300;
+    fdf->ptXdepart = 300;
+    fdf->ptYdepart = 300;
     fdf->nblines = 0;
+    fdf->seed = 0;
 }
 
 int main(int ac, char **av)
 {
     t_fdf fdf;
-    // t_map *map;
 
     fdf.map = NULL;
     if (ac != 2)
-    return (0);
+        return (0);
     fdf.mlx_ptr = mlx_init();
     fdf.win_ptr = mlx_new_window(fdf.mlx_ptr, 1500, 2000, "fdf 42");
     init_fdf(&fdf);
+    fdf.color = 0xE628AB;
     fdf.map = ft_open(av[1], &fdf);
-    calc_horizontal_x(&fdf);
-    calc_vertical_y(&fdf);
+    calc_horizontal_x(&fdf, fdf.color);
+    calc_vertical_y(&fdf, fdf.color);
     mlx_key_hook(fdf.win_ptr, key_fdf, &fdf);
     mlx_loop(fdf.mlx_ptr);
     return (0);
