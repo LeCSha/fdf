@@ -33,7 +33,7 @@ void coord_x_y(t_fdf *fdf)
     {
       fdf->map[i].point[j].x = coord_x(fdf, j, i, 0);
       fdf->map[i].point[j].y = coord_y(fdf, j, i, fdf->map[i].point[j].z, 0);
-      // printf("%i\n", fdf->map[i].point[j].y);
+      printf("%i\n", fdf->map[i].point[j].y);
       j++;
     }
     i++;
