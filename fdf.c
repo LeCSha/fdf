@@ -109,15 +109,15 @@ void check_win_scale(t_fdf *fdf)
       fdf->ptXdepart += abs(fdf->ptXdepart + fdf->x_min);
     if ((fdf->ptYdepart + fdf->y_min) < 0)
       fdf->ptYdepart += abs(fdf->ptYdepart + fdf->y_min);
-    printf("%f\n", fdf->scal);
-    printf("%i\n", fdf->ptXdepart);
-    printf("%i\n", fdf->ptYdepart);
-    printf("%i\n", fdf->x_max);
-    printf("%i\n", fdf->x_min);
-    printf("%i\n", fdf->y_max);
-    printf("%i\n", fdf->y_min);
-    printf("%i\n", fdf->win_width);
-    printf("%i\n", fdf->win_height);
+    // printf("%f\n", fdf->scal);
+    // printf("%i\n", fdf->ptXdepart);
+    // printf("%i\n", fdf->ptYdepart);
+    // printf("%i\n", fdf->x_max);
+    // printf("%i\n", fdf->x_min);
+    // printf("%i\n", fdf->y_max);
+    // printf("%i\n", fdf->y_min);
+    // printf("%i\n", fdf->win_width);
+    // printf("%i\n", fdf->win_height);
 }
 
 int main(int ac, char **av)
