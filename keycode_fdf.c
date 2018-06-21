@@ -1,9 +1,27 @@
 #include "fdf.h"
 
+void free_fdf(t_fdf *fdf)
+{
+	int i;
+	int j;
+
+	i = 0;
+	j = 0;
+	while (i < fdf->nblines)
+	{
+		free(fdf->map[i].point);
+		i++;
+	}
+	free(fdf->img);
+	free(fdf->map);
+}
+
 void    exit_fdf(t_fdf *fdf)
 {
+	mlx_destroy_image(fdf->mlx_ptr, fdf->img->img_ptr);
 	mlx_clear_window(fdf->mlx_ptr, fdf->win_ptr);
 	mlx_destroy_window(fdf->mlx_ptr, fdf->win_ptr);
+	free_fdf(fdf);
 	exit(0);
 }
 
@@ -17,39 +35,66 @@ void    move_map(int key, t_fdf *fdf)
 		fdf->ptYdepart -= 10;
 	if (key == 126)
 		fdf->ptYdepart += 10;
+	mlx_destroy_image(fdf->mlx_ptr, fdf->img->img_ptr);
 	mlx_clear_window(fdf->mlx_ptr, fdf->win_ptr);
+	fdf->img->img_ptr = mlx_new_image(fdf->mlx_ptr, fdf->win_width, fdf->win_height);
+	fdf->img->data = (int *)mlx_get_data_addr(fdf->img->img_ptr, &fdf->img->bpp, &fdf->img->size_l, &fdf->img->endian);
 	calc_horizontal_x(fdf, fdf->color);
-	calc_vertical_y(fdf, fdf->color); 
+	calc_vertical_y(fdf, fdf->color);
+	mlx_put_image_to_window(fdf->mlx_ptr, fdf->win_ptr, fdf->img->img_ptr, 0, 0);
+}
+
+void relief_fdf(int key, t_fdf *fdf)
+{
+    if (key == 14)
+      fdf->rel_z -= 1;
+    else
+      fdf->rel_z += 1;
+		mlx_destroy_image(fdf->mlx_ptr, fdf->img->img_ptr);
+		mlx_clear_window(fdf->mlx_ptr, fdf->win_ptr);
+		fdf->img->img_ptr = mlx_new_image(fdf->mlx_ptr, fdf->win_width, fdf->win_height);
+		fdf->img->data = (int *)mlx_get_data_addr(fdf->img->img_ptr, &fdf->img->bpp, &fdf->img->size_l, &fdf->img->endian);
+		calc_horizontal_x(fdf, fdf->color);
+		calc_vertical_y(fdf, fdf->color);
+		mlx_put_image_to_window(fdf->mlx_ptr, fdf->win_ptr, fdf->img->img_ptr, 0, 0);
 }
 
 void    zoom_fdf(int key, t_fdf *fdf)
 {
-	if (key == 69)
-	{
-		fdf->scalx += 0.5;
-		fdf->scaly += 0.5;
+    if (key == 69)
+        fdf->scal += 0.5;
+    else
+        fdf->scal -= 0.5;
+		mlx_destroy_image(fdf->mlx_ptr, fdf->img->img_ptr);
 		mlx_clear_window(fdf->mlx_ptr, fdf->win_ptr);
+		fdf->img->img_ptr = mlx_new_image(fdf->mlx_ptr, fdf->win_width, fdf->win_height);
+		fdf->img->data = (int *)mlx_get_data_addr(fdf->img->img_ptr, &fdf->img->bpp, &fdf->img->size_l, &fdf->img->endian);
+		calc_horizontal_x(fdf, fdf->color);
+		calc_vertical_y(fdf, fdf->color);
+		mlx_put_image_to_window(fdf->mlx_ptr, fdf->win_ptr, fdf->img->img_ptr, 0, 0);
+}
+
+void    random_color(int key, t_fdf *fdf)
+{
+	mlx_destroy_image(fdf->mlx_ptr, fdf->img->img_ptr);
+	mlx_clear_window(fdf->mlx_ptr, fdf->win_ptr);
+	if (key == 76)
+	{
+		fdf->seed = fdf_random(fdf->color);
+		fdf->color = int_to_color(fdf->seed);
+		fdf->img->img_ptr = mlx_new_image(fdf->mlx_ptr, fdf->win_width, fdf->win_height);
+		fdf->img->data = (int *)mlx_get_data_addr(fdf->img->img_ptr, &fdf->img->bpp, &fdf->img->size_l, &fdf->img->endian);
 		calc_horizontal_x(fdf, fdf->color);
 		calc_vertical_y(fdf, fdf->color);
 	}
 	else
 	{
-		fdf->scalx -= 0.5;
-		fdf->scaly -= 0.5;
-		mlx_clear_window(fdf->mlx_ptr, fdf->win_ptr);
-		calc_horizontal_x(fdf, fdf->color);
-		calc_vertical_y(fdf, fdf->color);
- 
+		fdf->img->img_ptr = mlx_new_image(fdf->mlx_ptr, fdf->win_width, fdf->win_height);
+		fdf->img->data = (int *)mlx_get_data_addr(fdf->img->img_ptr, &fdf->img->bpp, &fdf->img->size_l, &fdf->img->endian);
+		calc_horizontal_x(fdf, 0);
+		calc_vertical_y(fdf, 0);
 	}
-}
-
-void    random_color(t_fdf *fdf)
-{
-	mlx_clear_window(fdf->mlx_ptr, fdf->win_ptr);
-	fdf->seed = fdf_random(fdf->color);
-	fdf->color = int_to_color(fdf->seed);
-	calc_horizontal_x(fdf, fdf->color);
-	calc_vertical_y(fdf, fdf->color);
+	mlx_put_image_to_window(fdf->mlx_ptr, fdf->win_ptr, fdf->img->img_ptr, 0, 0);
 }
 
 void    ft_sleep()
@@ -64,22 +109,24 @@ void    ft_sleep()
 void    epileptic_color(t_fdf *fdf)
 {
 	int i;
-	
+
 	i = 0;
 	while (i < 70)
 	{
+		mlx_destroy_image(fdf->mlx_ptr, fdf->img->img_ptr);
 		mlx_clear_window(fdf->mlx_ptr, fdf->win_ptr);
 		fdf->seed = fdf_random(fdf->color);
-		int color = fdf_random(fdf->seed);
 		fdf->color = int_to_color(fdf->seed);
-		calc_horizontal_x(fdf, color);
-		calc_vertical_y(fdf, color);
+		fdf->img->img_ptr = mlx_new_image(fdf->mlx_ptr, fdf->win_width, fdf->win_height);
+		fdf->img->data = (int *)mlx_get_data_addr(fdf->img->img_ptr, &fdf->img->bpp, &fdf->img->size_l, &fdf->img->endian);
+		calc_horizontal_x(fdf, fdf->color);
+		calc_vertical_y(fdf, fdf->color);
+		mlx_put_image_to_window(fdf->mlx_ptr, fdf->win_ptr, fdf->img->img_ptr, 0, 0);
 		mlx_do_sync(fdf->mlx_ptr);
 		ft_sleep();
 		i++;
 	}
 }
-
 
 int   key_fdf(int key, t_fdf *fdf)
 {
@@ -92,9 +139,11 @@ int   key_fdf(int key, t_fdf *fdf)
 		move_map(key, fdf);
 	if (key == 78 || key == 69)
 		zoom_fdf(key, fdf);
-	if (key == 76)
-		random_color(fdf);
+	if (key == 76 || key == 0)
+		random_color(key, fdf);
 	if (key == 13)
 		epileptic_color(fdf);
+	if (key == 14 || key == 17)
+		relief_fdf(key, fdf);
 	return (0);
 }

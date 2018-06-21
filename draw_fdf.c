@@ -8,7 +8,11 @@ void    go_trace_it(t_fdf *fdf, int color)
     int i;
 
     i = 0;
-    mlx_pixel_put(fdf->mlx_ptr, fdf->win_ptr, fdf->startx, fdf->starty, color);
+    // printf("%d\n", fdf->starty);
+    // printf("%d\n", fdf->startx);
+    // printf("%d\n", fdf->win_width);
+    fdf->img->data[fdf->starty * fdf->win_width + fdf->startx] = color;
+    // mlx_pixel_put(fdf->mlx_ptr, fdf->win_ptr, fdf->startx, fdf->starty, color);
     if (fdf->dx > fdf->dy)
     {
         ratio = (2 * fdf->dy) - fdf->dx;
@@ -24,7 +28,8 @@ void    go_trace_it(t_fdf *fdf, int color)
             else
                 ratio = ratio + rigthleft;
             fdf->startx = fdf->startx + fdf->xinc;
-            mlx_pixel_put(fdf->mlx_ptr, fdf->win_ptr, fdf->startx, fdf->starty, color);
+            fdf->img->data[fdf->starty * fdf->win_width + fdf->startx] = color;
+            // mlx_pixel_put(fdf->mlx_ptr, fdf->win_ptr, fdf->startx, fdf->starty, color);
             i++;
         }
     }
@@ -43,7 +48,8 @@ void    go_trace_it(t_fdf *fdf, int color)
             else
                 ratio = ratio + updown;
             fdf->starty = fdf->starty + fdf->yinc;
-            mlx_pixel_put(fdf->mlx_ptr, fdf->win_ptr, fdf->startx, fdf->starty, color);
+            fdf->img->data[fdf->starty * fdf->win_width + fdf->startx] = color;
+            // mlx_pixel_put(fdf->mlx_ptr, fdf->win_ptr, fdf->startx, fdf->starty, color);
             i++;
         }
     }
@@ -60,14 +66,15 @@ void    draw_base_line(t_fdf *fdf, int color)
     go_trace_it(fdf, color);
 }
 
-int coord_x(t_fdf *fdf, int x, int y)
+int coord_x(t_fdf *fdf, int x, int y, int ptX)
 {
-    return (fdf->ptXdepart + (fdf->scalx * x) - (fdf->scalx * y));
+    return (ptX + (fdf->scal * x) - (fdf->scal * y));
 }
-int coord_y(t_fdf *fdf, int x, int y, int z)
+int coord_y(t_fdf *fdf, int x, int y, int z, int ptY)
 {
-	return (((fdf->ptYdepart + (fdf->scaly * x) + (fdf->scaly * y) )/ 2) - (z * 4));
+	return (ptY + ((fdf->scal * x) + (fdf->scal * y)/ 2) - (z * fdf->rel_z));
 }
+
 
 void    calc_horizontal_x(t_fdf *fdf, int color)
 {
@@ -81,11 +88,18 @@ void    calc_horizontal_x(t_fdf *fdf, int color)
         j = 0;
         while (j < fdf->nbpoints - 1)
         {
-            fdf->startx = coord_x(fdf, j, i);
-            fdf->starty = coord_y(fdf, j, i, fdf->map[i].point[j].z);
-            fdf->endx = coord_x(fdf, j + 1, i);
-            fdf->endy = coord_y(fdf, j + 1, i, fdf->map[i].point[j + 1].z);
-            draw_base_line(fdf, color);
+            fdf->startx = coord_x(fdf, j, i, fdf->ptXdepart);
+            fdf->starty = coord_y(fdf, j, i, fdf->map[i].point[j].z, fdf->ptYdepart);
+            fdf->endx = coord_x(fdf, j + 1, i, fdf->ptXdepart);
+            fdf->endy = coord_y(fdf, j + 1, i, fdf->map[i].point[j + 1].z, fdf->ptYdepart);
+            if (color == 0)
+            {
+              fdf->seed = fdf_random(fdf->color);
+              fdf->color = int_to_color(fdf->seed * (i + j));
+              draw_base_line(fdf, fdf->color);
+            }
+            else
+              draw_base_line(fdf, color);
             j++;
         }
         i++;
@@ -98,17 +112,23 @@ void    calc_vertical_y(t_fdf *fdf, int color)
     int j;
 
     i = 0;
-    j = 0;
     while (i < fdf->nblines - 1)
     {
         j = 0;
         while (j < fdf->nbpoints)
         {
-            fdf->startx = coord_x(fdf, j, i);
-            fdf->starty = coord_y(fdf, j, i, fdf->map[i].point[j].z);
-            fdf->endx = coord_x(fdf, j, i + 1);
-            fdf->endy = coord_y(fdf, j, i + 1, fdf->map[i + 1].point[j].z);
-            draw_base_line(fdf, color);
+            fdf->startx = coord_x(fdf, j, i, fdf->ptXdepart);
+            fdf->starty = coord_y(fdf, j, i, fdf->map[i].point[j].z, fdf->ptYdepart);
+            fdf->endx = coord_x(fdf, j, i + 1, fdf->ptXdepart);
+            fdf->endy = coord_y(fdf, j, i + 1, fdf->map[i + 1].point[j].z, fdf->ptYdepart);
+            if (color == 0)
+            {
+              fdf->seed = fdf_random(fdf->color);
+              fdf->color = int_to_color(fdf->seed * (i + j));
+              draw_base_line(fdf, fdf->color);
+            }
+            else
+              draw_base_line(fdf, color);
             j++;
         }
         i++;

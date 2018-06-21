@@ -21,15 +21,27 @@
 # include <limits.h>
 # include "minilibx/mlx.h"
 # include "libft/libft.h"
+
 typedef struct point
 {
 	int z;
+	int x;
+	int y;
 }              t_point;
 
 typedef struct map
 {
 	t_point *point;
 }              t_map;
+
+typedef struct mlx_img
+{
+	void *img_ptr;
+	int *data;
+	int size_l;
+	int bpp;
+	int endian;
+}							t_mlx_img;
 
 typedef struct fdf
 {
@@ -39,14 +51,14 @@ typedef struct fdf
 	int nblines;
 	int dx;
 	int dy;
-	double scalx;
-	double scaly;
+	double scal;
 	int startx;
 	int starty;
 	int endx;
 	int endy;
 	int xinc;
 	int yinc;
+	int rel_z;
 	char *line;
 	int ptdepart;
 	int ptXdepart;
@@ -54,8 +66,17 @@ typedef struct fdf
 	int xwin;
 	int ywin;
 	int seed;
-	unsigned int color;
+	int win_height;
+	int win_width;
+	int color;
+	int x_max;
+	int y_max;
+	int z_max;
+	int x_min;
+	int y_min;
+	int z_min;
 	t_map *map;
+	t_mlx_img *img;
 }              t_fdf;
 
 typedef
@@ -68,14 +89,11 @@ t_map   *ft_open(char *av, t_fdf *fdf);
 int     key_fdf(int key, t_fdf *fdf);
 void    calc_horizontal_x(t_fdf *fdf, int color);
 void    calc_vertical_y(t_fdf *fdf, int color);
-int     coord_x(t_fdf *fdf, int x, int y);
-int     coord_y(t_fdf *fdf, int x, int y, int z);
+int     coord_x(t_fdf *fdf, int x, int y, int ptX);
+int     coord_y(t_fdf *fdf, int x, int y, int z, int ptY);
 void    go_trace_it(t_fdf *fdf, int color);
 void    draw_base_line(t_fdf *fdf, int color);
 unsigned int			fdf_random(int seed);
 int			int_to_color(unsigned int color);
-//int convert_nb(char c);
-//int power(int nb, int tpower);
-//int *char_to_int(char *rgb);
 
 #endif
