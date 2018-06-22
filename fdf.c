@@ -139,7 +139,7 @@ int main(int ac, char **av)
     fdf.color = 0xE628AB;
     calc_horizontal_x(&fdf, fdf.color);
     calc_vertical_y(&fdf, fdf.color);
-    // mlx_string_put(fdf.mlx_ptr, fdf.win_ptr, 50, 50, fdf.color, "ZOOM : ");
+    mlx_string_put(fdf.mlx_ptr, fdf.win_ptr, 50, 50, fdf.color, "ZOOM : ");
     mlx_put_image_to_window(fdf.mlx_ptr, fdf.win_ptr, fdf.img->img_ptr, 0, 100);
     mlx_key_hook(fdf.win_ptr, key_fdf, &fdf);
     mlx_loop(fdf.mlx_ptr);
