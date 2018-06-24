@@ -33,7 +33,7 @@ void coord_x_y(t_fdf *fdf)
     {
       fdf->map[i].point[j].x = coord_x(fdf, j, i, 0);
       fdf->map[i].point[j].y = coord_y(fdf, j, i, fdf->map[i].point[j].z, 0);
-      printf("%i\n", fdf->map[i].point[j].y);
+      // printf("%i\n", fdf->map[i].point[j].y);
       j++;
     }
     i++;
@@ -134,13 +134,13 @@ int main(int ac, char **av)
     fdf.win_ptr = mlx_new_window(fdf.mlx_ptr, fdf.win_width, fdf.win_height, "fdf 42");
     if (!(fdf.img = malloc(sizeof(t_mlx_img*))))
       return (0);
-    fdf.img->img_ptr = mlx_new_image(fdf.mlx_ptr, fdf.win_width, fdf.win_height-100);
+    fdf.img->img_ptr = mlx_new_image(fdf.mlx_ptr, fdf.win_width, fdf.win_height);
     fdf.img->data = (int *)mlx_get_data_addr(fdf.img->img_ptr, &fdf.img->bpp, &fdf.img->size_l, &fdf.img->endian);
     fdf.color = 0xE628AB;
     calc_horizontal_x(&fdf, fdf.color);
     calc_vertical_y(&fdf, fdf.color);
-    mlx_string_put(fdf.mlx_ptr, fdf.win_ptr, 50, 50, fdf.color, "ZOOM : ");
-    mlx_put_image_to_window(fdf.mlx_ptr, fdf.win_ptr, fdf.img->img_ptr, 0, 100);
+    // mlx_string_put(fdf.mlx_ptr, fdf.win_ptr, 50, 50, fdf.color, "ZOOM : ");
+    mlx_put_image_to_window(fdf.mlx_ptr, fdf.win_ptr, fdf.img->img_ptr, 0, 0);
     mlx_key_hook(fdf.win_ptr, key_fdf, &fdf);
     mlx_loop(fdf.mlx_ptr);
     return (0);

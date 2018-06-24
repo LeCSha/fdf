@@ -8,8 +8,8 @@ int int_to_color(unsigned int color)
 	int res;
 
 	r = (color & 0xFF0000) >> 16;
-	g = (color & 0xFF00) >> 8;
-	b = color & 0xFF;
+	g = (color & 0x00FF00) >> 8;
+	b = color & 0x0000FF;
 	res = (r << 16) + (g << 8) + b;
 	return (res);
 }

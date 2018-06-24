@@ -8,11 +8,8 @@ void    go_trace_it(t_fdf *fdf, int color)
     int i;
 
     i = 0;
-    // printf("%d\n", fdf->starty);
-    // printf("%d\n", fdf->startx);
-    // printf("%d\n", fdf->win_width);
-    fdf->img->data[fdf->starty * fdf->win_width + fdf->startx] = color;
-    // mlx_pixel_put(fdf->mlx_ptr, fdf->win_ptr, fdf->startx, fdf->starty, color);
+    if (fdf->starty >= 0 && fdf->startx >= 0)
+      fdf->img->data[fdf->starty * fdf->win_width + fdf->startx] = color;
     if (fdf->dx > fdf->dy)
     {
         ratio = (2 * fdf->dy) - fdf->dx;
@@ -28,8 +25,8 @@ void    go_trace_it(t_fdf *fdf, int color)
             else
                 ratio = ratio + rigthleft;
             fdf->startx = fdf->startx + fdf->xinc;
-            fdf->img->data[fdf->starty * fdf->win_width + fdf->startx] = color;
-            // mlx_pixel_put(fdf->mlx_ptr, fdf->win_ptr, fdf->startx, fdf->starty, color);
+            if (fdf->starty >= 0 && fdf->startx >= 0)
+              fdf->img->data[fdf->starty * fdf->win_width + fdf->startx] = color;
             i++;
         }
     }
@@ -48,8 +45,8 @@ void    go_trace_it(t_fdf *fdf, int color)
             else
                 ratio = ratio + updown;
             fdf->starty = fdf->starty + fdf->yinc;
-            fdf->img->data[fdf->starty * fdf->win_width + fdf->startx] = color;
-            // mlx_pixel_put(fdf->mlx_ptr, fdf->win_ptr, fdf->startx, fdf->starty, color);
+            if (fdf->starty >= 0 && fdf->startx >= 0)
+              fdf->img->data[fdf->starty * fdf->win_width + fdf->startx] = color;
             i++;
         }
     }
@@ -68,11 +65,11 @@ void    draw_base_line(t_fdf *fdf, int color)
 
 int coord_x(t_fdf *fdf, int x, int y, int ptX)
 {
-    return (ptX + (fdf->scal * x) - (fdf->scal * y));
+    return (ptX + (fdf->scal * x) + (fdf->scal * y));
 }
 int coord_y(t_fdf *fdf, int x, int y, int z, int ptY)
 {
-	return (ptY + ((fdf->scal * x) + (fdf->scal * y)/ 2) - (z * fdf->rel_z));
+	return (ptY + ((fdf->scal * y) - (fdf->scal * x)/ 2) - (z * fdf->rel_z));
 }
 
 
