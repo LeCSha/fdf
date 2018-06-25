@@ -4,7 +4,7 @@ void init_fdf(t_fdf *fdf)
 {
     fdf->win_width = 1000;
     fdf->win_height = 800;
-    fdf->scal = 0;
+    fdf->scal = 12;
     fdf->dx = 0;
     fdf->dy = 0;
     fdf->startx = 0;
@@ -13,8 +13,8 @@ void init_fdf(t_fdf *fdf)
     fdf->endy = 0;
     fdf->xinc = 0;
     fdf->yinc = 0;
-    fdf->ptXdepart = 100;
-    fdf->ptYdepart = 100;
+    fdf->ptXdepart = 0;
+    fdf->ptYdepart = 0;
     fdf->nblines = 0;
     fdf->seed = 0;
     fdf->rel_z = 2;
@@ -96,21 +96,38 @@ void coord_min(t_fdf *fdf)
 
 void check_win_scale(t_fdf *fdf)
 {
-    if (fdf->nbpoints < 200)
-      fdf->scal = 7;
-    else
-      fdf->scal = 2;
+    // printf("scal %f\n", fdf->scal);
+    // while ((fdf->nbpoints * fdf->scal >= fdf->win_width) || (fdf->nblines * fdf->scal >= fdf->win_height))
+    //   fdf->scal -= 1;
     coord_x_y(fdf);
     coord_max(fdf);
-    coord_min(fdf);
+    coord_min(fdf);    
+  
+    // if ()
+    while ((fdf->x_max > fdf->win_width || fdf->y_max > fdf->win_height) && fdf->scal >= 0)
+    {
+      fdf->scal -= 1;
+      coord_x_y(fdf);
+      coord_max(fdf);     
+      coord_min(fdf);
+    }
+    printf("scal %f\n", fdf->scal);      
+    printf("x min %d\n", fdf->x_min);
+    printf("x max %d\n", fdf->x_max);
+    printf("y min %d\n", fdf->y_min); 
+    printf("y max %d\n", fdf->y_max);
     fdf->ptXdepart = (fdf->win_width / 2) - ((fdf->x_max - fdf->x_min) / 2);
     fdf->ptYdepart = (fdf->win_height / 2) - ((fdf->y_max - fdf->y_min) / 2);
+    printf("ptXdepart  %d\n", fdf->ptXdepart);
+    printf("ptYdepart %i\n", fdf->ptYdepart);
     if ((fdf->ptXdepart + fdf->x_min) < 0)
-      fdf->ptXdepart += abs(fdf->ptXdepart + fdf->x_min);
+      fdf->ptXdepart += abs(fdf->x_min);
     if ((fdf->ptYdepart + fdf->y_min) < 0)
-      fdf->ptYdepart += abs(fdf->ptYdepart + fdf->y_min);
-    // printf("%f\n", fdf->scal);
-    // printf("%i\n", fdf->ptXdepart);
+      fdf->ptYdepart += abs(fdf->y_min);
+    printf("fdf->x_max - fdf->x_min %d\n", fdf->x_max - fdf->x_min);
+    printf("fdf->y_max - fdf->y_min %d\n", fdf->y_max - fdf->y_min);
+    printf("ptXdepart  %d\n", fdf->ptXdepart);
+    printf("ptYdepart %i\n", fdf->ptYdepart);
     // printf("%i\n", fdf->ptYdepart);
     // printf("%i\n", fdf->x_max);
     // printf("%i\n", fdf->x_min);
