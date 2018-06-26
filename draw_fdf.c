@@ -6,7 +6,11 @@ void    go_trace_it(t_fdf *fdf, int color)
     int rigthleft;
     int updown;
     int i;
+    int stx;
+    int sty;
 
+    stx = fdf->startx;
+    sty = fdf->starty;
     i = 0;
     if (fdf->starty >= 0 && fdf->startx >= 0)
       fdf->img->data[fdf->starty * fdf->win_width + fdf->startx] = color;
@@ -65,11 +69,11 @@ void    draw_base_line(t_fdf *fdf, int color)
 
 int coord_x(t_fdf *fdf, int x, int y, int ptX)
 {
-    return (ptX + (fdf->scal * x) + (fdf->scal * y));
+    return ((ptX + x + y) * fdf->scal);
 }
 int coord_y(t_fdf *fdf, int x, int y, int z, int ptY)
 {
-	return (ptY + ((fdf->scal * y) - (fdf->scal * x) - (z * fdf->rel_z));
+	return (ptY + (fdf->scal * y) - ((fdf->scal * x) / 2) - (z * fdf->rel_z));
 }
 
 

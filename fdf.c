@@ -1,27 +1,29 @@
 #include "fdf.h"
 
-int init_fdf(t_fdf *fdf)
+t_fdf *init_fdf()
 {
-    if (!(fdf = (t_fdf *)malloc(sizeof(t_fdf))))
+    t_fdf *new;
+
+    if (!(new = (t_fdf *)malloc(sizeof(t_fdf))))
       return (0);
-    fdf->map = NULL;
-    fdf->win_width = 1000;
-    fdf->win_height = 800;
-    fdf->scal = 12;
-    fdf->dx = 0;
-    fdf->dy = 0;
-    fdf->startx = 0;
-    fdf->starty = 0;
-    fdf->endx = 0;
-    fdf->endy = 0;
-    fdf->xinc = 0;
-    fdf->yinc = 0;
-    fdf->ptXdepart = 0;
-    fdf->ptYdepart = 0;
-    fdf->nblines = 0;
-    fdf->seed = 0;
-    fdf->rel_z = 2;
-    return (1);
+    new->map = NULL;
+    new->win_width = 1000;
+    new->win_height = 800;
+    new->scal = 12;
+    new->dx = 0;
+    new->dy = 0;
+    new->startx = 0;
+    new->starty = 0;
+    new->endx = 0;
+    new->endy = 0;
+    new->xinc = 0;
+    new->yinc = 0;
+    new->ptXdepart = 0;
+    new->ptYdepart = 0;
+    new->nblines = 0;
+    new->seed = 0;
+    new->rel_z = 2;
+    return (new);
 }
 
 void coord_x_y(t_fdf *fdf)
@@ -100,45 +102,23 @@ void coord_min(t_fdf *fdf)
 
 void check_win_scale(t_fdf *fdf)
 {
-    // printf("scal %f\n", fdf->scal);
-    // while ((fdf->nbpoints * fdf->scal >= fdf->win_width) || (fdf->nblines * fdf->scal >= fdf->win_height))
-    //   fdf->scal -= 1;
     coord_x_y(fdf);
     coord_max(fdf);
-    coord_min(fdf);    
-  
-    // if ()
-    while ((fdf->x_max > fdf->win_width || fdf->y_max > fdf->win_height) && fdf->scal >= 0)
+    coord_min(fdf);
+
+    while ((fdf->x_max > fdf->win_width || (fdf->y_max - fdf->y_min) > fdf->win_height) && fdf->scal >= 0)
     {
       fdf->scal -= 1;
       coord_x_y(fdf);
-      coord_max(fdf);     
+      coord_max(fdf);
       coord_min(fdf);
     }
-    printf("scal %f\n", fdf->scal);      
-    printf("x min %d\n", fdf->x_min);
-    printf("x max %d\n", fdf->x_max);
-    printf("y min %d\n", fdf->y_min); 
-    printf("y max %d\n", fdf->y_max);
-    fdf->ptXdepart = (fdf->win_width / 2) - ((fdf->x_max - fdf->x_min) / 2);
-    fdf->ptYdepart = (fdf->win_height / 2) - ((fdf->y_max - fdf->y_min) / 2);
-    printf("ptXdepart  %d\n", fdf->ptXdepart);
-    printf("ptYdepart %i\n", fdf->ptYdepart);
+    fdf->ptXdepart = fdf->win_width / 2 - fdf->x_max / 2;
+    fdf->ptYdepart = fdf->win_height / 2 - (fdf->y_max - fdf->y_min) / 2;
     if ((fdf->ptXdepart + fdf->x_min) < 0)
       fdf->ptXdepart += abs(fdf->x_min);
     if ((fdf->ptYdepart + fdf->y_min) < 0)
       fdf->ptYdepart += abs(fdf->y_min);
-    printf("fdf->x_max - fdf->x_min %d\n", fdf->x_max - fdf->x_min);
-    printf("fdf->y_max - fdf->y_min %d\n", fdf->y_max - fdf->y_min);
-    printf("ptXdepart  %d\n", fdf->ptXdepart);
-    printf("ptYdepart %i\n", fdf->ptYdepart);
-    // printf("%i\n", fdf->ptYdepart);
-    // printf("%i\n", fdf->x_max);
-    // printf("%i\n", fdf->x_min);
-    // printf("%i\n", fdf->y_max);
-    // printf("%i\n", fdf->y_min);
-    // printf("%i\n", fdf->win_width);
-    // printf("%i\n", fdf->win_height);
 }
 
 int main(int ac, char **av)
@@ -147,7 +127,7 @@ int main(int ac, char **av)
 
     if (ac != 2)
         return (0);
-    if (!(init_fdf(fdf)))
+    if (!(fdf = init_fdf()))
       return (0);
     fdf->map = ft_open(av[1], fdf);
     fdf->mlx_ptr = mlx_init();
@@ -156,7 +136,7 @@ int main(int ac, char **av)
     if (!(fdf->img = (t_mlx_img *)malloc(sizeof(t_mlx_img))))
       return (0);
     fdf->img->img_ptr = mlx_new_image(fdf->mlx_ptr, fdf->win_width, fdf->win_height);
-    fdf->img->data = (int *)mlx_get_data_addr(fdf->img->img_ptr, fdf->img->bpp, fdf->img->size_l, fdf->img->endian);
+    fdf->img->data = (int *)mlx_get_data_addr(fdf->img->img_ptr, &fdf->img->bpp, &fdf->img->size_l, &fdf->img->endian);
     fdf->color = 0xE628AB;
     calc_horizontal_x(fdf, fdf->color);
     calc_vertical_y(fdf, fdf->color);
