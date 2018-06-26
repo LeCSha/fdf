@@ -69,7 +69,7 @@ int coord_x(t_fdf *fdf, int x, int y, int ptX)
 }
 int coord_y(t_fdf *fdf, int x, int y, int z, int ptY)
 {
-	return (ptY + ((fdf->scal * y) - (fdf->scal * x)/ 2) - (z * fdf->rel_z));
+	return (ptY + ((fdf->scal * y) - (fdf->scal * x) - (z * fdf->rel_z));
 }
 
 
