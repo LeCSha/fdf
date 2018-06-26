@@ -75,6 +75,8 @@ typedef struct fdf
 	int x_min;
 	int y_min;
 	int z_min;
+	int moveX;
+	int moveY;
 	t_map *map;
 	t_mlx_img *img;
 }              t_fdf;

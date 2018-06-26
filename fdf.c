@@ -23,6 +23,8 @@ t_fdf *init_fdf()
     new->nblines = 0;
     new->seed = 0;
     new->rel_z = 2;
+    new->moveX = 0;
+    new->moveY = 0;
     return (new);
 }
 
@@ -39,7 +41,6 @@ void coord_x_y(t_fdf *fdf)
     {
       fdf->map[i].point[j].x = coord_x(fdf, j, i, 0);
       fdf->map[i].point[j].y = coord_y(fdf, j, i, fdf->map[i].point[j].z, 0);
-      // printf("%i\n", fdf->map[i].point[j].y);
       j++;
     }
     i++;
@@ -106,7 +107,7 @@ void check_win_scale(t_fdf *fdf)
     coord_max(fdf);
     coord_min(fdf);
 
-    while ((fdf->x_max > fdf->win_width || (fdf->y_max - fdf->y_min) > fdf->win_height) && fdf->scal >= 0)
+    while ((fdf->x_max > fdf->win_width + 200 || (fdf->y_max - fdf->y_min) > fdf->win_height) && fdf->scal >= 0)
     {
       fdf->scal -= 1;
       coord_x_y(fdf);
@@ -115,8 +116,9 @@ void check_win_scale(t_fdf *fdf)
     }
     fdf->ptXdepart = fdf->win_width / 2 - fdf->x_max / 2;
     fdf->ptYdepart = fdf->win_height / 2 - (fdf->y_max - fdf->y_min) / 2;
-    if ((fdf->ptXdepart + fdf->x_min) < 0)
-      fdf->ptXdepart += abs(fdf->x_min);
+    // if ((fdf->ptXdepart + fdf->x_min) < 0)
+    //   fdf->ptXdepart += abs(fdf->x_min);
+    printf("ptxdep %i\n", fdf->ptXdepart);
     if ((fdf->ptYdepart + fdf->y_min) < 0)
       fdf->ptYdepart += abs(fdf->y_min);
 }

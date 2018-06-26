@@ -27,21 +27,22 @@ void    exit_fdf(t_fdf *fdf)
 
 void    move_map(int key, t_fdf *fdf)
 {
-	if (key == 123)
-		fdf->ptXdepart += 10;
+ 	if (key == 123)
+		fdf->moveX += fdf->scal;
 	if (key == 124)
-		fdf->ptXdepart -= 10;
+		fdf->moveX -= fdf->scal;
 	if (key == 125)
-		fdf->ptYdepart -= 10;
+		fdf->moveY -= fdf->scal;
 	if (key == 126)
-		fdf->ptYdepart += 10;
+		fdf->moveY += fdf->scal;
 	mlx_destroy_image(fdf->mlx_ptr, fdf->img->img_ptr);
 	mlx_clear_window(fdf->mlx_ptr, fdf->win_ptr);
 	fdf->img->img_ptr = mlx_new_image(fdf->mlx_ptr, fdf->win_width, fdf->win_height);
 	fdf->img->data = (int *)mlx_get_data_addr(fdf->img->img_ptr, &fdf->img->bpp, &fdf->img->size_l, &fdf->img->endian);
 	calc_horizontal_x(fdf, fdf->color);
 	calc_vertical_y(fdf, fdf->color);
-	mlx_put_image_to_window(fdf->mlx_ptr, fdf->win_ptr, fdf->img->img_ptr, 0, 0);
+	mlx_put_image_to_window(fdf->mlx_ptr, fdf->win_ptr, fdf->img->img_ptr, fdf->moveX, fdf->moveY);
+
 }
 
 void relief_fdf(int key, t_fdf *fdf)
@@ -56,7 +57,7 @@ void relief_fdf(int key, t_fdf *fdf)
 		fdf->img->data = (int *)mlx_get_data_addr(fdf->img->img_ptr, &fdf->img->bpp, &fdf->img->size_l, &fdf->img->endian);
 		calc_horizontal_x(fdf, fdf->color);
 		calc_vertical_y(fdf, fdf->color);
-		mlx_put_image_to_window(fdf->mlx_ptr, fdf->win_ptr, fdf->img->img_ptr, 0, 0);
+		mlx_put_image_to_window(fdf->mlx_ptr, fdf->win_ptr, fdf->img->img_ptr, fdf->moveX, fdf->moveY);
 }
 
 void    zoom_fdf(int key, t_fdf *fdf)
@@ -71,7 +72,7 @@ void    zoom_fdf(int key, t_fdf *fdf)
 		fdf->img->data = (int *)mlx_get_data_addr(fdf->img->img_ptr, &fdf->img->bpp, &fdf->img->size_l, &fdf->img->endian);
 		calc_horizontal_x(fdf, fdf->color);
 		calc_vertical_y(fdf, fdf->color);
-		mlx_put_image_to_window(fdf->mlx_ptr, fdf->win_ptr, fdf->img->img_ptr, 0, 0);
+		mlx_put_image_to_window(fdf->mlx_ptr, fdf->win_ptr, fdf->img->img_ptr, fdf->moveX, fdf->moveY);
 }
 
 void    random_color(int key, t_fdf *fdf)
@@ -94,7 +95,7 @@ void    random_color(int key, t_fdf *fdf)
 		calc_horizontal_x(fdf, 0);
 		calc_vertical_y(fdf, 0);
 	}
-	mlx_put_image_to_window(fdf->mlx_ptr, fdf->win_ptr, fdf->img->img_ptr, 0, 0);
+	mlx_put_image_to_window(fdf->mlx_ptr, fdf->win_ptr, fdf->img->img_ptr, fdf->moveX, fdf->moveY);
 }
 
 void    ft_sleep()
@@ -121,7 +122,7 @@ void    epileptic_color(t_fdf *fdf)
 		fdf->img->data = (int *)mlx_get_data_addr(fdf->img->img_ptr, &fdf->img->bpp, &fdf->img->size_l, &fdf->img->endian);
 		calc_horizontal_x(fdf, fdf->color);
 		calc_vertical_y(fdf, fdf->color);
-		mlx_put_image_to_window(fdf->mlx_ptr, fdf->win_ptr, fdf->img->img_ptr, 0, 0);
+		mlx_put_image_to_window(fdf->mlx_ptr, fdf->win_ptr, fdf->img->img_ptr, fdf->moveX, fdf->moveY);
 		mlx_do_sync(fdf->mlx_ptr);
 		ft_sleep();
 		i++;
