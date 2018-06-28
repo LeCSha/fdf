@@ -69,7 +69,7 @@ void    draw_base_line(t_fdf *fdf, int color)
 
 int coord_x(t_fdf *fdf, int x, int y, int ptX)
 {
-    return ((ptX + x + y) * fdf->scal);
+    return (ptX + (x + y) * fdf->scal);
 }
 int coord_y(t_fdf *fdf, int x, int y, int z, int ptY)
 {

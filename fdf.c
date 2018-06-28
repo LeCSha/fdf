@@ -5,7 +5,7 @@ t_fdf *init_fdf()
     t_fdf *new;
 
     if (!(new = (t_fdf *)malloc(sizeof(t_fdf))))
-      return (0);
+      return (NULL);
     new->map = NULL;
     new->win_width = 1000;
     new->win_height = 800;
@@ -116,9 +116,6 @@ void check_win_scale(t_fdf *fdf)
     }
     fdf->ptXdepart = fdf->win_width / 2 - fdf->x_max / 2;
     fdf->ptYdepart = fdf->win_height / 2 - (fdf->y_max - fdf->y_min) / 2;
-    // if ((fdf->ptXdepart + fdf->x_min) < 0)
-    //   fdf->ptXdepart += abs(fdf->x_min);
-    printf("ptxdep %i\n", fdf->ptXdepart);
     if ((fdf->ptYdepart + fdf->y_min) < 0)
       fdf->ptYdepart += abs(fdf->y_min);
 }
@@ -128,22 +125,26 @@ int main(int ac, char **av)
     t_fdf *fdf;
 
     if (ac != 2)
-        return (0);
+        return (print_error(5));
     if (!(fdf = init_fdf()))
+      return (print_error(6));
+    if (check_file(av[1]) == -1)
       return (0);
-    fdf->map = ft_open(av[1], fdf);
+    if (ft_open(av[1], fdf) == -1)
+      return (0);
     fdf->mlx_ptr = mlx_init();
     check_win_scale(fdf);
-    fdf->win_ptr = mlx_new_window(fdf->mlx_ptr, fdf->win_width, fdf->win_height, "fdf 42");
+    fdf->win_ptr = mlx_new_window(fdf->mlx_ptr, fdf->win_width + 200, fdf->win_height, "fdf 42");
     if (!(fdf->img = (t_mlx_img *)malloc(sizeof(t_mlx_img))))
       return (0);
     fdf->img->img_ptr = mlx_new_image(fdf->mlx_ptr, fdf->win_width, fdf->win_height);
     fdf->img->data = (int *)mlx_get_data_addr(fdf->img->img_ptr, &fdf->img->bpp, &fdf->img->size_l, &fdf->img->endian);
-    fdf->color = 0xE628AB;
+    fdf->color = 0xFFD700;
+    // 0xE628AB
     calc_horizontal_x(fdf, fdf->color);
     calc_vertical_y(fdf, fdf->color);
-    // mlx_string_put(fdf->mlx_ptr, fdf->win_ptr, 50, 50, fdf->color, "ZOOM : ");
-    mlx_put_image_to_window(fdf->mlx_ptr, fdf->win_ptr, fdf->img->img_ptr, 0, 0);
+    mlx_string_put(fdf->mlx_ptr, fdf->win_ptr, 20, 50, 0xFFD700, "ZOOM : ");
+    mlx_put_image_to_window(fdf->mlx_ptr, fdf->win_ptr, fdf->img->img_ptr, 200, 0);
     mlx_key_hook(fdf->win_ptr, key_fdf, fdf);
     mlx_loop(fdf->mlx_ptr);
     return (0);

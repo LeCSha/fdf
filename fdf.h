@@ -85,9 +85,9 @@ typedef
 
 
 void    fdf(char *av, t_fdf *fdf);
-void    count_fdf(int fd, t_fdf *fdf);
+int			count_fdf(int fd, t_fdf *fdf);
 t_map   *read_map(int fd, t_fdf *fdf);
-t_map   *ft_open(char *av, t_fdf *fdf);
+int			ft_open(char *av, t_fdf *fdf);
 int     key_fdf(int key, t_fdf *fdf);
 void    calc_horizontal_x(t_fdf *fdf, int color);
 void    calc_vertical_y(t_fdf *fdf, int color);
@@ -97,5 +97,8 @@ void    go_trace_it(t_fdf *fdf, int color);
 void    draw_base_line(t_fdf *fdf, int color);
 unsigned int			fdf_random(int seed);
 int			int_to_color(unsigned int color);
+int			check_file(char *file);
+int			check_char(char c);
+int			print_error(int nb);
 
 #endif

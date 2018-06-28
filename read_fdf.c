@@ -1,6 +1,6 @@
 #include "fdf.h"
 
-void  count_fdf(int fd, t_fdf *fdf)
+int  count_fdf(int fd, t_fdf *fdf)
 {
     char *line;
     int tmp;
@@ -20,14 +20,15 @@ void  count_fdf(int fd, t_fdf *fdf)
         if (tmp == 0)
             tmp = fdf->nbpoints;
         else
-            if (tmp != fdf->nbpoints)
-               ;
+            if (tmp != fdf->nbpoints || fdf->nbpoints < 2)
+               return (print_error(4));
         fdf->nblines++;
         free(line);
         line = NULL;
     }
-    if (line)
-        free(line);
+    if (fdf->nblines < 2)
+      return (print_error(4));
+    return (0);
 }
 
 t_map    *read_map(int fd, t_fdf *fdf)
@@ -46,6 +47,8 @@ t_map    *read_map(int fd, t_fdf *fdf)
         iter = 0;
         while (line[fdf->xinc] != '\0')
         {
+            if (check_char(line[fdf->xinc]) == -1)
+              return (NULL);
             if ((line[fdf->xinc] >= '0' && line[fdf->xinc] <= '9') || line[fdf->xinc] == '-')
             {
                 if (line[fdf->xinc+1] >= '0' && line[fdf->xinc+1] <= '9')
@@ -56,7 +59,7 @@ t_map    *read_map(int fd, t_fdf *fdf)
                     fdf->map[fdf->yinc].point[iter].z = ft_atoi(ft_strsub(line, fdf->startx, fdf->xinc));
                 }
                 else{
-                    fdf->map[fdf->yinc].point[iter].z = ft_atoi(&line[fdf->xinc]);
+                      fdf->map[fdf->yinc].point[iter].z = ft_atoi(&line[fdf->xinc]);
                     }
                 iter++;
             }
@@ -66,21 +69,24 @@ t_map    *read_map(int fd, t_fdf *fdf)
         free(line);
         line = NULL;
     }
-    if (line)
-        free(line);
     return (fdf->map);
 }
 
-t_map  *ft_open(char *av, t_fdf *fdf)
+int  ft_open(char *av, t_fdf *fdf)
 {
     int fd;
-    t_map *map;
 
-    fd = open(av, O_RDONLY);
-    count_fdf(fd, &(*fdf));
-    close(fd);
-    fd = open(av, O_RDONLY);
-    map = read_map(fd, &(*fdf));
-    close(fd);
-    return (fdf->map);
+    if ((fd = open(av, O_RDONLY)) == -1)
+      return (print_error(1));
+    else
+      if (count_fdf(fd, fdf) == -1)
+        return (print_error(2));
+    if (close(fd) == -1 || (fd = open(av, O_RDONLY)) == -1)
+      return (print_error(1));
+    else
+      if (!(fdf->map = read_map(fd, fdf)))
+        return (print_error(3));
+    if (close(fd) == -1)
+      return (print_error(1));
+    return (0);
 }
