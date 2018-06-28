@@ -101,21 +101,55 @@ void coord_min(t_fdf *fdf)
   }
 }
 
+void res_z(t_fdf *fdf)
+{
+  int i;
+  int j;
+
+  i = 0;
+  while (i < fdf->nblines)
+  {
+    j = 0;
+    while (j < fdf->nbpoints)
+    {
+      fdf->map[i].point[j].z = fdf->map[i].point[j].z / 5;
+      j++;
+    }
+    i++;
+  }
+}
+
 void check_win_scale(t_fdf *fdf)
 {
     coord_x_y(fdf);
     coord_max(fdf);
     coord_min(fdf);
+    // printf("z max%i\n", fdf->z_max);
+    // printf("z min%i\n", fdf->z_min);
+    // if (abs(fdf->z_min) > abs(fdf->z_max))
+    //   fdf->z_max = fdf->z_min;
 
-    while ((fdf->x_max > fdf->win_width + 200 || (fdf->y_max - fdf->y_min) > fdf->win_height) && fdf->scal >= 0)
+
+    while (abs(fdf->z_max) > 50)
+    {
+      res_z(fdf);
+      coord_x_y(fdf);
+      coord_max(fdf);
+      coord_min(fdf);
+    }
+    // printf("z max%i\n", fdf->z_max);
+    // printf("z min%i\n", fdf->z_min);
+    while ((fdf->x_max > fdf->win_width || (fdf->y_max - fdf->y_min) > fdf->win_height) && fdf->scal >= 0)
     {
       fdf->scal -= 1;
       coord_x_y(fdf);
       coord_max(fdf);
       coord_min(fdf);
     }
+    // if (fdf->z_max < 0)
     fdf->ptXdepart = fdf->win_width / 2 - fdf->x_max / 2;
     fdf->ptYdepart = fdf->win_height / 2 - (fdf->y_max - fdf->y_min) / 2;
+    // printf("%i\n", );
     if ((fdf->ptYdepart + fdf->y_min) < 0)
       fdf->ptYdepart += abs(fdf->y_min);
 }
@@ -125,9 +159,9 @@ int main(int ac, char **av)
     t_fdf *fdf;
 
     if (ac != 2)
-        return (print_error(5));
+        return (print_error(5, NULL));
     if (!(fdf = init_fdf()))
-      return (print_error(6));
+      return (print_error(6, fdf));
     if (check_file(av[1]) == -1)
       return (0);
     if (ft_open(av[1], fdf) == -1)
@@ -136,7 +170,7 @@ int main(int ac, char **av)
     check_win_scale(fdf);
     fdf->win_ptr = mlx_new_window(fdf->mlx_ptr, fdf->win_width + 200, fdf->win_height, "fdf 42");
     if (!(fdf->img = (t_mlx_img *)malloc(sizeof(t_mlx_img))))
-      return (0);
+      return (print_error(6, fdf));
     fdf->img->img_ptr = mlx_new_image(fdf->mlx_ptr, fdf->win_width, fdf->win_height);
     fdf->img->data = (int *)mlx_get_data_addr(fdf->img->img_ptr, &fdf->img->bpp, &fdf->img->size_l, &fdf->img->endian);
     fdf->color = 0xFFD700;

@@ -1,21 +1,5 @@
 #include "fdf.h"
 
-void free_fdf(t_fdf *fdf)
-{
-	int i;
-	int j;
-
-	i = 0;
-	j = 0;
-	while (i < fdf->nblines)
-	{
-		free(fdf->map[i].point);
-		i++;
-	}
-	free(fdf->img);
-	free(fdf->map);
-}
-
 void    exit_fdf(t_fdf *fdf)
 {
 	mlx_destroy_image(fdf->mlx_ptr, fdf->img->img_ptr);

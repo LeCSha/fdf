@@ -97,8 +97,9 @@ void    go_trace_it(t_fdf *fdf, int color);
 void    draw_base_line(t_fdf *fdf, int color);
 unsigned int			fdf_random(int seed);
 int			int_to_color(unsigned int color);
+void		free_fdf(t_fdf *fdf);
 int			check_file(char *file);
 int			check_char(char c);
-int			print_error(int nb);
+int			print_error(int nb, t_fdf *fdf);
 
 #endif

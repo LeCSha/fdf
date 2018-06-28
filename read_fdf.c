@@ -21,13 +21,13 @@ int  count_fdf(int fd, t_fdf *fdf)
             tmp = fdf->nbpoints;
         else
             if (tmp != fdf->nbpoints || fdf->nbpoints < 2)
-               return (print_error(4));
+               return (print_error(4, fdf));
         fdf->nblines++;
         free(line);
         line = NULL;
     }
     if (fdf->nblines < 2)
-      return (print_error(4));
+      return (print_error(4, fdf));
     return (0);
 }
 
@@ -77,16 +77,16 @@ int  ft_open(char *av, t_fdf *fdf)
     int fd;
 
     if ((fd = open(av, O_RDONLY)) == -1)
-      return (print_error(1));
+      return (print_error(1, fdf));
     else
       if (count_fdf(fd, fdf) == -1)
-        return (print_error(2));
+        return (print_error(2, fdf));
     if (close(fd) == -1 || (fd = open(av, O_RDONLY)) == -1)
-      return (print_error(1));
+      return (print_error(1, fdf));
     else
       if (!(fdf->map = read_map(fd, fdf)))
-        return (print_error(3));
+        return (print_error(3, fdf));
     if (close(fd) == -1)
-      return (print_error(1));
+      return (print_error(1, fdf));
     return (0);
 }
