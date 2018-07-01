@@ -91,8 +91,8 @@ int			ft_open(char *av, t_fdf *fdf);
 int     key_fdf(int key, t_fdf *fdf);
 void    calc_horizontal_x(t_fdf *fdf, int color);
 void    calc_vertical_y(t_fdf *fdf, int color);
-int     coord_x(t_fdf *fdf, int x, int y, int ptX);
-int     coord_y(t_fdf *fdf, int x, int y, int z, int ptY);
+int     coord_x(t_fdf *fdf, int x, int y);
+int     coord_y(t_fdf *fdf, int x, int y, int z);
 void    go_trace_it(t_fdf *fdf, int color);
 void    draw_base_line(t_fdf *fdf, int color);
 unsigned int			fdf_random(int seed);
@@ -100,6 +100,6 @@ int			int_to_color(unsigned int color);
 void		free_fdf(t_fdf *fdf);
 int			check_file(char *file);
 int			check_char(char c);
-int			print_error(int nb, t_fdf *fdf);
+void		print_error(int nb, t_fdf *fdf);
 
 #endif

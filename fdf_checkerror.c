@@ -3,8 +3,10 @@
 void free_fdf(t_fdf *fdf)
 {
 	int i;
+  int j;
 
 	i = 0;
+  j = 0;
   if (fdf->map)
   {
     while (i < fdf->nblines)
@@ -37,7 +39,7 @@ int   check_file(char *file)
   len = ft_strlen(file);
   res = ft_strncmp(&file[len - 4], ".fdf", 4);
   if (res != 0)
-    return (print_error(5, NULL));
+    print_error(5, NULL);
   return (1);
 }
 
@@ -61,7 +63,7 @@ int check_char(char c)
   return (0);
 }
 
-int   print_error(int nb, t_fdf *fdf)
+void   print_error(int nb, t_fdf *fdf)
 {
   if (nb == 1)
     ft_putstr("Problem opening/closing file - file missing/not valid\n");
@@ -77,5 +79,5 @@ int   print_error(int nb, t_fdf *fdf)
     ft_putstr("Allocation failed\n");
   if (fdf)
     free_fdf(fdf);
-  return (-1);
+  exit(0);
 }
