@@ -51,10 +51,11 @@ t_map    *read_map(int fd, t_fdf *fdf)
         while (line[fdf->xinc] != '\0')
         {
             if (check_char(line[fdf->xinc]) == -1)
-              return (NULL);
+            //   return (NULL);
+                printf("lettre\n");
             if ((line[fdf->xinc] >= '0' && line[fdf->xinc] <= '9') || line[fdf->xinc] == '-')
             {
-                if (line[fdf->xinc+1] >= '0' && line[fdf->xinc+1] <= '9')
+                if (line[fdf->xinc + 1] >= '0' && line[fdf->xinc + 1] <= '9')
                 {
                     fdf->startx = fdf->xinc;
                     while ((line[fdf->xinc] >= '0' && line[fdf->xinc] <= '9' )|| line[fdf->xinc] == '-')
@@ -69,7 +70,8 @@ t_map    *read_map(int fd, t_fdf *fdf)
                     fdf->map[fdf->yinc].point[iter].z = ft_atoi(&line[fdf->xinc]);
                 iter++;
             }
-            fdf->xinc++;
+            if (line[fdf->xinc] != '\0')
+                fdf->xinc++;
         }
         fdf->yinc++;
         free(line);

@@ -126,7 +126,7 @@ void check_win_scale(t_fdf *fdf)
     coord_min(fdf);
     if (abs(fdf->z_min) > abs(fdf->z_max))
       fdf->z_max = fdf->z_min;
-    while (abs(fdf->z_max) > 50)
+    while (abs(fdf->z_max) > 100)
     {
       res_z(fdf);
       coord_x_y(fdf);
