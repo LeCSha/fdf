@@ -133,7 +133,8 @@ void check_win_scale(t_fdf *fdf)
       coord_max(fdf);
       coord_min(fdf);
     }
-    while ((fdf->x_max > fdf->win_width || (fdf->y_max - fdf->y_min) > fdf->win_height) && fdf->scal >= 0)
+    while ((fdf->x_max > fdf->win_width ||
+    (fdf->y_max - fdf->y_min) > fdf->win_height) && fdf->scal >= 0)
     {
       fdf->scal -= 1;
       coord_x_y(fdf);
@@ -146,29 +147,33 @@ void check_win_scale(t_fdf *fdf)
       fdf->ptYdepart += abs(fdf->y_min);
 }
 
-int main(int ac, char **av)
+void launch_fdf(char *av)
 {
-    t_fdf *fdf;
+  t_fdf *fdf;
 
+  if (!(fdf = init_fdf()))
+    print_error(6, fdf);
+  check_file(av);
+  ft_open(av, fdf);
+  fdf->mlx_ptr = mlx_init();
+  check_win_scale(fdf);
+  fdf->win_ptr = mlx_new_window(fdf->mlx_ptr, fdf->win_width + 200, fdf->win_height, "fdf 42");
+  if (!(fdf->img = (t_mlx_img *)malloc(sizeof(t_mlx_img))))
+    print_error(6, fdf);
+  fdf->img->img_ptr = mlx_new_image(fdf->mlx_ptr, fdf->win_width, fdf->win_height);
+  fdf->img->data = (int *)mlx_get_data_addr(fdf->img->img_ptr, &fdf->img->bpp, &fdf->img->size_l, &fdf->img->endian);
+  fdf->color = 0xE628AB;
+  calc_horizontal_x(fdf, fdf->color);
+  calc_vertical_y(fdf, fdf->color);
+  mlx_string_put(fdf->mlx_ptr, fdf->win_ptr, 20, 50, 0xFFD700, "ZOOM : ");
+  mlx_put_image_to_window(fdf->mlx_ptr, fdf->win_ptr, fdf->img->img_ptr, 200, 0);
+  mlx_key_hook(fdf->win_ptr, key_fdf, fdf);
+  mlx_loop(fdf->mlx_ptr);
+}
+int main(int ac, char **argv)
+{
     if (ac != 2)
       print_error(5, NULL);
-    if (!(fdf = init_fdf()))
-      print_error(6, fdf);
-    check_file(av[1]);
-    ft_open(av[1], fdf);
-    fdf->mlx_ptr = mlx_init();
-    check_win_scale(fdf);
-    fdf->win_ptr = mlx_new_window(fdf->mlx_ptr, fdf->win_width + 200, fdf->win_height, "fdf 42");
-    if (!(fdf->img = (t_mlx_img *)malloc(sizeof(t_mlx_img))))
-      print_error(6, fdf);
-    fdf->img->img_ptr = mlx_new_image(fdf->mlx_ptr, fdf->win_width, fdf->win_height);
-    fdf->img->data = (int *)mlx_get_data_addr(fdf->img->img_ptr, &fdf->img->bpp, &fdf->img->size_l, &fdf->img->endian);
-    fdf->color = 0xE628AB;
-    calc_horizontal_x(fdf, fdf->color);
-    calc_vertical_y(fdf, fdf->color);
-    mlx_string_put(fdf->mlx_ptr, fdf->win_ptr, 20, 50, 0xFFD700, "ZOOM : ");
-    mlx_put_image_to_window(fdf->mlx_ptr, fdf->win_ptr, fdf->img->img_ptr, 200, 0);
-    mlx_key_hook(fdf->win_ptr, key_fdf, fdf);
-    mlx_loop(fdf->mlx_ptr);
+    launch_fdf(argv[1]);
     return (0);
 }

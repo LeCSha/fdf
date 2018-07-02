@@ -60,11 +60,8 @@ typedef struct fdf
 	int yinc;
 	int rel_z;
 	char *line;
-	int ptdepart;
 	int ptXdepart;
 	int ptYdepart;
-	int xwin;
-	int ywin;
 	int seed;
 	int win_height;
 	int win_width;
@@ -81,16 +78,17 @@ typedef struct fdf
 	t_mlx_img *img;
 }              t_fdf;
 
-typedef
 
-
-void    fdf(char *av, t_fdf *fdf);
+void 		check_win_scale(t_fdf *fdf);
 int			count_fdf(int fd, t_fdf *fdf);
 t_map   *read_map(int fd, t_fdf *fdf);
 int			ft_open(char *av, t_fdf *fdf);
 int     key_fdf(int key, t_fdf *fdf);
 void    calc_horizontal_x(t_fdf *fdf, int color);
 void    calc_vertical_y(t_fdf *fdf, int color);
+void 		coord_x_y(t_fdf *fdf);
+void 		coord_max(t_fdf *fdf);
+void 		coord_min(t_fdf *fdf);
 int     coord_x(t_fdf *fdf, int x, int y);
 int     coord_y(t_fdf *fdf, int x, int y, int z);
 void    go_trace_it(t_fdf *fdf, int color);
@@ -99,7 +97,7 @@ unsigned int			fdf_random(int seed);
 int			int_to_color(unsigned int color);
 void		free_fdf(t_fdf *fdf);
 int			check_file(char *file);
-int			check_char(char c);
+int			check_char(char *line);
 void		print_error(int nb, t_fdf *fdf);
 
 #endif

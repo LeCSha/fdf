@@ -20,7 +20,7 @@ void	go_trace_it(t_fdf *fdf, int color)
 	int	i;
 
 	i = 0;
-	if (fdf->starty >= 0 && fdf->startx >= 0)
+	if (fdf->starty >= 0 && fdf->startx >= 0 && (fdf->starty * fdf->win_width + fdf->startx) < fdf->win_width * fdf->win_height)
 		fdf->img->data[fdf->starty * fdf->win_width + fdf->startx] = color;
 	if (fdf->dx > fdf->dy)
 	{
@@ -37,7 +37,7 @@ void	go_trace_it(t_fdf *fdf, int color)
 			else
 				ratio = ratio + rigthleft;
 			fdf->startx = fdf->startx + fdf->xinc;
-			if (fdf->starty >= 0 && fdf->startx >= 0)
+			if (fdf->starty >= 0 && fdf->startx >= 0 && (fdf->starty * fdf->win_width + fdf->startx) < fdf->win_width * fdf->win_height)
 				fdf->img->data[fdf->starty * fdf->win_width + fdf->startx] = color;
 			i++;
 		}
@@ -57,7 +57,7 @@ void	go_trace_it(t_fdf *fdf, int color)
 			else
 				ratio = ratio + updown;
 			fdf->starty = fdf->starty + fdf->yinc;
-			if (fdf->starty >= 0 && fdf->startx >= 0)
+			if (fdf->starty >= 0 && fdf->startx >= 0 && (fdf->starty * fdf->win_width + fdf->startx) < fdf->win_width * fdf->win_height)
 				fdf->img->data[fdf->starty * fdf->win_width + fdf->startx] = color;
 			i++;
 		}
@@ -104,7 +104,7 @@ void	calc_horizontal_x(t_fdf *fdf, int color)
 			if (color == 0)
 			{
 				fdf->seed = fdf_random(fdf->color);
-				fdf->color = int_to_color(fdf->seed * (i + j));
+				fdf->color = int_to_color(fdf->seed * (i + j + fdf->color));
 				draw_base_line(fdf, fdf->color);
 			}
 			else
@@ -132,7 +132,7 @@ void	calc_vertical_y(t_fdf *fdf, int color)
 			if (color == 0)
 			{
 				fdf->seed = fdf_random(fdf->color);
-				fdf->color = int_to_color(fdf->seed * (i + j));
+				fdf->color = int_to_color(fdf->seed * (i + j + fdf->color));
 				draw_base_line(fdf, fdf->color);
 			}
 			else

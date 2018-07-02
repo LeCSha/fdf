@@ -9,6 +9,22 @@ void    exit_fdf(t_fdf *fdf)
 	exit(0);
 }
 
+void reinit_fdf(t_fdf *fdf)
+{
+	mlx_destroy_image(fdf->mlx_ptr, fdf->img->img_ptr);
+	mlx_clear_window(fdf->mlx_ptr, fdf->win_ptr);
+	fdf->ptXdepart = 0;
+	fdf->ptYdepart = 0;
+  // check_win_scale(fdf);
+  fdf->img->img_ptr = mlx_new_image(fdf->mlx_ptr, fdf->win_width, fdf->win_height);
+  fdf->img->data = (int *)mlx_get_data_addr(fdf->img->img_ptr, &fdf->img->bpp, &fdf->img->size_l, &fdf->img->endian);
+  fdf->color = 0xE628AB;
+  calc_horizontal_x(fdf, fdf->color);
+  calc_vertical_y(fdf, fdf->color);
+  mlx_string_put(fdf->mlx_ptr, fdf->win_ptr, 20, 50, 0xFFD700, "ZOOM : ");
+  mlx_put_image_to_window(fdf->mlx_ptr, fdf->win_ptr, fdf->img->img_ptr, 200, 0);
+}
+
 void    move_map(int key, t_fdf *fdf)
 {
  	if (key == 123)
@@ -16,17 +32,16 @@ void    move_map(int key, t_fdf *fdf)
 	if (key == 124)
 		fdf->moveX -= fdf->scal;
 	if (key == 125)
-		fdf->moveY -= fdf->scal;
+		fdf->ptYdepart -= fdf->scal;
 	if (key == 126)
-		fdf->moveY += fdf->scal;
+		fdf->ptYdepart += fdf->scal;
 	mlx_destroy_image(fdf->mlx_ptr, fdf->img->img_ptr);
 	mlx_clear_window(fdf->mlx_ptr, fdf->win_ptr);
 	fdf->img->img_ptr = mlx_new_image(fdf->mlx_ptr, fdf->win_width, fdf->win_height);
 	fdf->img->data = (int *)mlx_get_data_addr(fdf->img->img_ptr, &fdf->img->bpp, &fdf->img->size_l, &fdf->img->endian);
 	calc_horizontal_x(fdf, fdf->color);
 	calc_vertical_y(fdf, fdf->color);
-	mlx_put_image_to_window(fdf->mlx_ptr, fdf->win_ptr, fdf->img->img_ptr, fdf->moveX, fdf->moveY);
-
+	mlx_put_image_to_window(fdf->mlx_ptr, fdf->win_ptr, fdf->img->img_ptr, fdf->moveX + 200, fdf->moveY);
 }
 
 void relief_fdf(int key, t_fdf *fdf)
@@ -41,7 +56,7 @@ void relief_fdf(int key, t_fdf *fdf)
 		fdf->img->data = (int *)mlx_get_data_addr(fdf->img->img_ptr, &fdf->img->bpp, &fdf->img->size_l, &fdf->img->endian);
 		calc_horizontal_x(fdf, fdf->color);
 		calc_vertical_y(fdf, fdf->color);
-		mlx_put_image_to_window(fdf->mlx_ptr, fdf->win_ptr, fdf->img->img_ptr, fdf->moveX, fdf->moveY);
+		mlx_put_image_to_window(fdf->mlx_ptr, fdf->win_ptr, fdf->img->img_ptr, fdf->moveX + 200, fdf->moveY);
 }
 
 void    zoom_fdf(int key, t_fdf *fdf)
@@ -52,11 +67,16 @@ void    zoom_fdf(int key, t_fdf *fdf)
         fdf->scal -= 0.5;
 		mlx_destroy_image(fdf->mlx_ptr, fdf->img->img_ptr);
 		mlx_clear_window(fdf->mlx_ptr, fdf->win_ptr);
+		coord_x_y(fdf);
+		coord_max(fdf);
+		coord_min(fdf);
+		if (fdf->ptXdepart + fdf->x_max > fdf->win_width)
+			fdf->win_width += fdf->ptXdepart + fdf->x_max - fdf->win_width;
 		fdf->img->img_ptr = mlx_new_image(fdf->mlx_ptr, fdf->win_width, fdf->win_height);
 		fdf->img->data = (int *)mlx_get_data_addr(fdf->img->img_ptr, &fdf->img->bpp, &fdf->img->size_l, &fdf->img->endian);
 		calc_horizontal_x(fdf, fdf->color);
 		calc_vertical_y(fdf, fdf->color);
-		mlx_put_image_to_window(fdf->mlx_ptr, fdf->win_ptr, fdf->img->img_ptr, fdf->moveX, fdf->moveY);
+		mlx_put_image_to_window(fdf->mlx_ptr, fdf->win_ptr, fdf->img->img_ptr, fdf->moveX + 200, fdf->moveY);
 }
 
 void    random_color(int key, t_fdf *fdf)
@@ -79,7 +99,7 @@ void    random_color(int key, t_fdf *fdf)
 		calc_horizontal_x(fdf, 0);
 		calc_vertical_y(fdf, 0);
 	}
-	mlx_put_image_to_window(fdf->mlx_ptr, fdf->win_ptr, fdf->img->img_ptr, fdf->moveX, fdf->moveY);
+	mlx_put_image_to_window(fdf->mlx_ptr, fdf->win_ptr, fdf->img->img_ptr, fdf->moveX + 200, fdf->moveY);
 }
 
 void    ft_sleep()
@@ -100,13 +120,11 @@ void    epileptic_color(t_fdf *fdf)
 	{
 		mlx_destroy_image(fdf->mlx_ptr, fdf->img->img_ptr);
 		mlx_clear_window(fdf->mlx_ptr, fdf->win_ptr);
-		fdf->seed = fdf_random(fdf->color);
-		fdf->color = int_to_color(fdf->seed);
 		fdf->img->img_ptr = mlx_new_image(fdf->mlx_ptr, fdf->win_width, fdf->win_height);
 		fdf->img->data = (int *)mlx_get_data_addr(fdf->img->img_ptr, &fdf->img->bpp, &fdf->img->size_l, &fdf->img->endian);
-		calc_horizontal_x(fdf, fdf->color);
-		calc_vertical_y(fdf, fdf->color);
-		mlx_put_image_to_window(fdf->mlx_ptr, fdf->win_ptr, fdf->img->img_ptr, fdf->moveX, fdf->moveY);
+		calc_horizontal_x(fdf, 0);
+		calc_vertical_y(fdf, 0);
+		mlx_put_image_to_window(fdf->mlx_ptr, fdf->win_ptr, fdf->img->img_ptr, fdf->moveX + 200, fdf->moveY);
 		mlx_do_sync(fdf->mlx_ptr);
 		ft_sleep();
 		i++;
@@ -120,6 +138,8 @@ int   key_fdf(int key, t_fdf *fdf)
 	i = 0;
 	if (key == 53)
 		exit_fdf(fdf);
+	if (key == 15)
+		reinit_fdf(fdf);
 	if (key == 123 || key == 124 || key == 125 || key == 126)
 		move_map(key, fdf);
 	if (key == 78 || key == 69)

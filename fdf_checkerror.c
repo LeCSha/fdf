@@ -3,10 +3,8 @@
 void free_fdf(t_fdf *fdf)
 {
 	int i;
-  int j;
 
 	i = 0;
-  j = 0;
   if (fdf->map)
   {
     while (i < fdf->nblines)
@@ -30,7 +28,7 @@ void free_fdf(t_fdf *fdf)
   fdf = NULL;
 }
 
-int   check_file(char *file)
+int check_file(char *file)
 {
   int len;
   int res;
@@ -45,25 +43,36 @@ int   check_file(char *file)
 
 void fdf_usage()
 {
-  ft_putstr("--- Usage ---\n");
+	ft_putstr("--- Usage ---\n");
+  ft_putstr(" \n");
   ft_putstr("./fdf yourfile.fdf\n");
+  ft_putstr(" \n");
   ft_putstr("--- Keycode ---\n");
+  ft_putstr(" \n");
   ft_putstr("'+' zoom + \n");
   ft_putstr("'-' zoom -\n");
   ft_putstr("'Entr' change color\n");
   ft_putstr("'w' to run epileptic color\n");
   ft_putstr("'a' to run multicolor\n");
   ft_putstr("'ESC' to exit\n");
+  ft_putstr(" \n");
 }
 
-int check_char(char c)
+int check_char(char *line)
 {
-  if ((c <= '0' && c >= '9') && c != ' ' && c != '-')
-    return (-1);
+	int i;
+
+	i = 0;
+	while (line[i] != '\0')
+	{
+		if (!(line[i] >= '0' && line[i] <= '9') && line[i] != ' ' && line[i] != '-')
+			return (-1);
+		i++;
+	}
   return (0);
 }
 
-void   print_error(int nb, t_fdf *fdf)
+void print_error(int nb, t_fdf *fdf)
 {
   if (nb == 1)
     ft_putstr("Problem opening/closing file - file missing/not valid\n");
@@ -77,7 +86,7 @@ void   print_error(int nb, t_fdf *fdf)
     fdf_usage();
   else if (nb == 6)
     ft_putstr("Allocation failed\n");
-  if (fdf)
+  if (fdf != NULL)
     free_fdf(fdf);
   exit(0);
 }
