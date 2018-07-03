@@ -142,22 +142,7 @@ void    epileptic_color(t_fdf *fdf)
 	}
 }
 
-// void	rotation(t_fdf *fdf, int xory)
-// {
-// 	// float	pt;
-// 	float	radian;
-// 	int i;
-//
-// 	radian = fdf->deg * 3.141 * 180;
-// 	// pt = 0;
-// 	if (xory == 1)
-// 		pt = (x - fdf->nbpoints / 2) * cos(radian) -
-// 			(y - e->len_y / 2) * sin(radian);
-// 	else if (xory == 0)
-// 		pt = (y - e->len_y / 2) * cos(radian) +
-// 			(x - e->len_x / 2) * sin(radian);
-// 	// return (pt);
-// }
+
 
 int   key_fdf(int key, t_fdf *fdf)
 {
