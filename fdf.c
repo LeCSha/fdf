@@ -7,8 +7,7 @@ t_fdf *init_fdf()
     if (!(new = (t_fdf *)malloc(sizeof(t_fdf))))
       return (NULL);
     new->map = NULL;
-    new->win_width = 1000;
-    new->win_height = 800;
+    new->img_wth = 1000;
     new->scal = 12;
     new->dx = 0;
     new->dy = 0;
@@ -133,18 +132,38 @@ void check_win_scale(t_fdf *fdf)
       coord_max(fdf);
       coord_min(fdf);
     }
-    while ((fdf->x_max > fdf->win_width ||
-    (fdf->y_max - fdf->y_min) > fdf->win_height) && fdf->scal >= 0)
+    while ((fdf->x_max > fdf->img_wth ||
+    fdf->y_max - fdf->y_min > HEIGHT) && fdf->scal >= 0)
     {
       fdf->scal -= 1;
       coord_x_y(fdf);
       coord_max(fdf);
       coord_min(fdf);
     }
-    fdf->ptXdepart = fdf->win_width / 2 - fdf->x_max / 2;
-    fdf->ptYdepart = fdf->win_height / 2 - (fdf->y_max - fdf->y_min) / 2;
+    fdf->ptXdepart = fdf->img_wth / 2 - fdf->x_max / 2;
+    fdf->ptYdepart = HEIGHT / 2 - (fdf->y_max - fdf->y_min) / 2;
     if ((fdf->ptYdepart + fdf->y_min) < 0)
       fdf->ptYdepart += abs(fdf->y_min);
+}
+
+void put_string(t_fdf *fdf)
+{
+  void *win;
+
+  win = mlx_new_window(fdf->mlx_ptr, 230, 800, "Keycode fdf");
+  mlx_string_put(fdf->mlx_ptr, win, 40, 40, 0x2EDD17, "-- Keycode --");
+  mlx_string_put(fdf->mlx_ptr, win, 20, 130, 0x2EDD17, "'+' : zoom +");
+  mlx_string_put(fdf->mlx_ptr, win, 20, 170, 0x2EDD17, "'-' : zoom -");
+  mlx_string_put(fdf->mlx_ptr, win, 20, 210, 0x2EDD17, "'up' : move up -");
+  mlx_string_put(fdf->mlx_ptr, win, 20, 250, 0x2EDD17, "'down' : move down");
+  mlx_string_put(fdf->mlx_ptr, win, 20, 290, 0x2EDD17, "'left' : move left");
+  mlx_string_put(fdf->mlx_ptr, win, 20, 330, 0x2EDD17, "'right' : move right");
+  mlx_string_put(fdf->mlx_ptr, win, 20, 370, 0x2EDD17, "'t' : increase top");
+  mlx_string_put(fdf->mlx_ptr, win, 20, 410, 0x2EDD17, "'e' : decrease top");
+  mlx_string_put(fdf->mlx_ptr, win, 20, 450, 0x2EDD17, "'w' : random colors");
+  mlx_string_put(fdf->mlx_ptr, win, 20, 490, 0x2EDD17, "'r' : reset");
+  mlx_string_put(fdf->mlx_ptr, win, 20, 530, 0x2EDD17, "'ESC' : exit");
+  fdf->win_str = win;
 }
 
 void launch_fdf(char *av)
@@ -156,18 +175,19 @@ void launch_fdf(char *av)
   check_file(av);
   ft_open(av, fdf);
   fdf->mlx_ptr = mlx_init();
+  fdf->win_ptr = mlx_new_window(fdf->mlx_ptr, WIDTH, HEIGHT, "fdf 42");
   check_win_scale(fdf);
-  fdf->win_ptr = mlx_new_window(fdf->mlx_ptr, fdf->win_width + 200, fdf->win_height, "fdf 42");
   if (!(fdf->img = (t_mlx_img *)malloc(sizeof(t_mlx_img))))
     print_error(6, fdf);
-  fdf->img->img_ptr = mlx_new_image(fdf->mlx_ptr, fdf->win_width, fdf->win_height);
+  fdf->img->img_ptr = mlx_new_image(fdf->mlx_ptr, fdf->img_wth, HEIGHT);
   fdf->img->data = (int *)mlx_get_data_addr(fdf->img->img_ptr, &fdf->img->bpp, &fdf->img->size_l, &fdf->img->endian);
-  fdf->color = 0xE628AB;
+  fdf->color = 0x84742d;
   calc_horizontal_x(fdf, fdf->color);
   calc_vertical_y(fdf, fdf->color);
-  mlx_string_put(fdf->mlx_ptr, fdf->win_ptr, 20, 50, 0xFFD700, "ZOOM : ");
-  mlx_put_image_to_window(fdf->mlx_ptr, fdf->win_ptr, fdf->img->img_ptr, 200, 0);
+  put_string(fdf);
+  mlx_put_image_to_window(fdf->mlx_ptr, fdf->win_ptr, fdf->img->img_ptr, 0, 0);
   mlx_key_hook(fdf->win_ptr, key_fdf, fdf);
+  mlx_key_hook(fdf->win_str, key_fdf, fdf);
   mlx_loop(fdf->mlx_ptr);
 }
 int main(int ac, char **argv)

@@ -22,11 +22,14 @@
 # include "minilibx/mlx.h"
 # include "libft/libft.h"
 
+# define WIDTH 1000
+# define HEIGHT 800
+
 typedef struct point
 {
-	int z;
-	int x;
-	int y;
+	float z;
+	float x;
+	float y;
 }              t_point;
 
 typedef struct map
@@ -47,6 +50,7 @@ typedef struct fdf
 {
 	void *mlx_ptr;
 	void *win_ptr;
+	void *win_str;
 	int nbpoints;
 	int nblines;
 	int dx;
@@ -63,8 +67,7 @@ typedef struct fdf
 	int ptXdepart;
 	int ptYdepart;
 	int seed;
-	int win_height;
-	int win_width;
+	int img_wth;
 	int color;
 	int x_max;
 	int y_max;
@@ -74,6 +77,7 @@ typedef struct fdf
 	int z_min;
 	int moveX;
 	int moveY;
+	int deg;
 	t_map *map;
 	t_mlx_img *img;
 }              t_fdf;
@@ -99,5 +103,6 @@ void		free_fdf(t_fdf *fdf);
 int			check_file(char *file);
 int			check_char(char *line);
 void		print_error(int nb, t_fdf *fdf);
+// void 		put_string(t_fdf *fdf);
 
 #endif

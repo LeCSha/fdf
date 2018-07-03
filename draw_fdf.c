@@ -20,8 +20,8 @@ void	go_trace_it(t_fdf *fdf, int color)
 	int	i;
 
 	i = 0;
-	if (fdf->starty >= 0 && fdf->startx >= 0 && (fdf->starty * fdf->win_width + fdf->startx) < fdf->win_width * fdf->win_height)
-		fdf->img->data[fdf->starty * fdf->win_width + fdf->startx] = color;
+	if (fdf->starty >= 0 && fdf->startx >= 0 && (fdf->starty * fdf->img_wth + fdf->startx) < fdf->img_wth * HEIGHT)
+		fdf->img->data[fdf->starty * fdf->img_wth + fdf->startx] = color;
 	if (fdf->dx > fdf->dy)
 	{
 		ratio = (2 * fdf->dy) - fdf->dx;
@@ -37,8 +37,8 @@ void	go_trace_it(t_fdf *fdf, int color)
 			else
 				ratio = ratio + rigthleft;
 			fdf->startx = fdf->startx + fdf->xinc;
-			if (fdf->starty >= 0 && fdf->startx >= 0 && (fdf->starty * fdf->win_width + fdf->startx) < fdf->win_width * fdf->win_height)
-				fdf->img->data[fdf->starty * fdf->win_width + fdf->startx] = color;
+			if (fdf->starty >= 0 && fdf->startx >= 0 && (fdf->starty * fdf->img_wth + fdf->startx) < fdf->img_wth * HEIGHT)
+				fdf->img->data[fdf->starty * fdf->img_wth + fdf->startx] = color;
 			i++;
 		}
 	}
@@ -57,8 +57,8 @@ void	go_trace_it(t_fdf *fdf, int color)
 			else
 				ratio = ratio + updown;
 			fdf->starty = fdf->starty + fdf->yinc;
-			if (fdf->starty >= 0 && fdf->startx >= 0 && (fdf->starty * fdf->win_width + fdf->startx) < fdf->win_width * fdf->win_height)
-				fdf->img->data[fdf->starty * fdf->win_width + fdf->startx] = color;
+			if (fdf->starty >= 0 && fdf->startx >= 0 && (fdf->starty * fdf->img_wth + fdf->startx) < fdf->img_wth * HEIGHT)
+				fdf->img->data[fdf->starty * fdf->img_wth + fdf->startx] = color;
 			i++;
 		}
 	}
