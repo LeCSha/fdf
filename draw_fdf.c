@@ -75,32 +75,39 @@ void	draw_base_line(t_fdf *fdf, int color)
 	go_trace_it(fdf, color);
 }
 
-int		coord_x(t_fdf *fdf, int x, int y)
+float		coord_x(t_fdf *fdf, float x, float y)
 {
 	return ((x + y) * fdf->scal);
 }
 
-int		coord_y(t_fdf *fdf, int x, int y, int z)
+float		coord_y(t_fdf *fdf, float x, float y, float z)
 {
-	return (fdf->scal * y - (fdf->scal * x) / 2 - z * fdf->rel_z);
+	return (fdf->scal * y - (fdf->scal * x) / 2 - z * fdf->rel_z * 0.82);
 }
 
 void	calc_horizontal_x(t_fdf *fdf, int color)
 {
 	int i;
 	int j;
+	float ang_x;
+	float ang_y;
 
-	i = 0;
-	j = 0;
-	while (i < fdf->nblines)
+	i = -1;
+	ang_x = 0;
+	ang_y = 0;
+	while (++i < fdf->nblines)
 	{
 		j = -1;
 		while (++j < fdf->nbpoints - 1)
 		{
-			fdf->startx = coord_x(fdf, j, i) + fdf->ptXdepart;
-			fdf->starty = coord_y(fdf, j, i, fdf->map[i].point[j].z) + fdf->ptYdepart;
-			fdf->endx = coord_x(fdf, j + 1, i) + fdf->ptXdepart;
-			fdf->endy = coord_y(fdf, j + 1, i, fdf->map[i].point[j + 1].z) + fdf->ptYdepart;
+			ang_x = rotate(fdf, j, i, 1);
+			ang_y = rotate(fdf, j, i, 0);
+			fdf->startx = coord_x(fdf, ang_x, ang_y) + fdf->ptXdepart;
+			fdf->starty = coord_y(fdf, ang_x, ang_y, fdf->map[i].point[j].z) + fdf->ptYdepart;
+			ang_x = rotate(fdf, j + 1, i, 1);
+			ang_y = rotate(fdf, j + 1, i, 0);
+			fdf->endx = coord_x(fdf, ang_x, ang_y) + fdf->ptXdepart;
+			fdf->endy = coord_y(fdf, ang_x, ang_y, fdf->map[i].point[j + 1].z) + fdf->ptYdepart;
 			if (color == 0)
 			{
 				fdf->seed = fdf_random(fdf->color);
@@ -110,7 +117,6 @@ void	calc_horizontal_x(t_fdf *fdf, int color)
 			else
 				draw_base_line(fdf, color);
 		}
-		i++;
 	}
 }
 
@@ -118,17 +124,30 @@ void	calc_vertical_y(t_fdf *fdf, int color)
 {
 	int i;
 	int j;
+	float ang_x;
+	float ang_y;
+	int nbp;
+	int nbl;
 
-	i = 0;
-	while (i < fdf->nblines - 1)
+	i = -1;
+	ang_x = 0;
+	ang_y = 0;
+	nbp = 0;
+	nbl = 0;
+	while (++i < fdf->nblines - 1)
 	{
 		j = -1;
 		while (++j < fdf->nbpoints)
 		{
-			fdf->startx = coord_x(fdf, j, i) + fdf->ptXdepart;
-			fdf->starty = coord_y(fdf, j, i, fdf->map[i].point[j].z) + fdf->ptYdepart;
-			fdf->endx = coord_x(fdf, j, i + 1) + fdf->ptXdepart;
-			fdf->endy = coord_y(fdf, j, i + 1, fdf->map[i + 1].point[j].z) + fdf->ptYdepart;
+			ang_x = rotate(fdf, j, i, 1);
+			ang_y = rotate(fdf, j, i, 0);
+			fdf->startx = coord_x(fdf, ang_x, ang_y) + fdf->ptXdepart;
+			fdf->starty = coord_y(fdf, ang_x, ang_y, fdf->map[i].point[j].z) + fdf->ptYdepart;
+			// fdf->starty = fdf->starty - (fdf->scal / 2 * 0.82 * fdf->map[i].point[j].z + fdf->ptYdepart);
+			ang_x = rotate(fdf, j, i + 1, 1);
+			ang_y = rotate(fdf, j, i + 1, 0);
+			fdf->endx = coord_x(fdf, ang_x, ang_y) + fdf->ptXdepart;
+			fdf->endy = coord_y(fdf, ang_x, ang_y, fdf->map[i + 1].point[j].z) + fdf->ptYdepart;
 			if (color == 0)
 			{
 				fdf->seed = fdf_random(fdf->color);
@@ -138,6 +157,5 @@ void	calc_vertical_y(t_fdf *fdf, int color)
 			else
 				draw_base_line(fdf, color);
 		}
-		i++;
 	}
 }

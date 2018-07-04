@@ -55,14 +55,14 @@ typedef struct fdf
 	int nblines;
 	int dx;
 	int dy;
-	double scal;
+	float scal;
 	int startx;
 	int starty;
 	int endx;
 	int endy;
 	int xinc;
 	int yinc;
-	int rel_z;
+	float rel_z;
 	char *line;
 	int ptXdepart;
 	int ptYdepart;
@@ -77,7 +77,9 @@ typedef struct fdf
 	int z_min;
 	int moveX;
 	int moveY;
-	int deg;
+	float deg;
+	float incli;
+	int key;
 	t_map *map;
 	t_mlx_img *img;
 }              t_fdf;
@@ -93,8 +95,8 @@ void    calc_vertical_y(t_fdf *fdf, int color);
 void 		coord_x_y(t_fdf *fdf);
 void 		coord_max(t_fdf *fdf);
 void 		coord_min(t_fdf *fdf);
-int     coord_x(t_fdf *fdf, int x, int y);
-int     coord_y(t_fdf *fdf, int x, int y, int z);
+float     coord_x(t_fdf *fdf, float x, float y);
+float     coord_y(t_fdf *fdf, float x, float y, float z);
 void    go_trace_it(t_fdf *fdf, int color);
 void    draw_base_line(t_fdf *fdf, int color);
 unsigned int			fdf_random(int seed);
@@ -103,6 +105,7 @@ void		free_fdf(t_fdf *fdf);
 int			check_file(char *file);
 int			check_char(char *line);
 void		print_error(int nb, t_fdf *fdf);
+float	rotate(t_fdf *fdf, float j, float y, int xoy);
 // void 		put_string(t_fdf *fdf);
 
 #endif
