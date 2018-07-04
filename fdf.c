@@ -44,8 +44,6 @@ void coord_x_y(t_fdf *fdf)
     j = 0;
     while (j < fdf->nbpoints)
     {
-      // ang_x = j;
-      // ang_y = i;
       ang_x = rotate(fdf, j, i, 1);
       ang_y = rotate(fdf, j, i, 0);
       fdf->map[i].point[j].x = coord_x(fdf, ang_x, ang_y);
@@ -78,7 +76,6 @@ void coord_max(t_fdf *fdf)
         fdf->y_max = fdf->map[i].point[j].y;
       j++;
     }
-
     i++;
   }
 }
@@ -105,7 +102,6 @@ void coord_min(t_fdf *fdf)
         fdf->y_min = fdf->map[i].point[j].y;
       j++;
     }
-
     i++;
   }
 }
@@ -185,6 +181,7 @@ void launch_fdf(char *av)
 {
   t_fdf *fdf;
 
+  fdf = NULL;
   if (!(fdf = init_fdf()))
     print_error(6, fdf);
   check_file(av);

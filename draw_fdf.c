@@ -143,7 +143,6 @@ void	calc_vertical_y(t_fdf *fdf, int color)
 			ang_y = rotate(fdf, j, i, 0);
 			fdf->startx = coord_x(fdf, ang_x, ang_y) + fdf->ptXdepart;
 			fdf->starty = coord_y(fdf, ang_x, ang_y, fdf->map[i].point[j].z) + fdf->ptYdepart;
-			// fdf->starty = fdf->starty - (fdf->scal / 2 * 0.82 * fdf->map[i].point[j].z + fdf->ptYdepart);
 			ang_x = rotate(fdf, j, i + 1, 1);
 			ang_y = rotate(fdf, j, i + 1, 0);
 			fdf->endx = coord_x(fdf, ang_x, ang_y) + fdf->ptXdepart;

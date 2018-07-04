@@ -60,17 +60,6 @@ void relief_fdf(int key, t_fdf *fdf)
       fdf->rel_z += 1;
 		mlx_destroy_image(fdf->mlx_ptr, fdf->img->img_ptr);
 		mlx_clear_window(fdf->mlx_ptr, fdf->win_ptr);
-		coord_x_y(fdf);
-		coord_max(fdf);
-		coord_min(fdf);
-		if (fdf->z_min < 0)
-		{
-			coord_x_y(fdf);
-			coord_max(fdf);
-			coord_min(fdf);
-			fdf->ptXdepart = fdf->img_wth / 2 - fdf->x_max / 2 + fdf->nbpoints * fdf->scal / 2;
-			fdf->ptYdepart = HEIGHT / 2 - (fdf->y_max - fdf->y_min) / 2;
-		}
 		fdf->img->img_ptr = mlx_new_image(fdf->mlx_ptr, fdf->img_wth, HEIGHT);
 		fdf->img->data = (int *)mlx_get_data_addr(fdf->img->img_ptr, &fdf->img->bpp, &fdf->img->size_l, &fdf->img->endian);
 		calc_horizontal_x(fdf, fdf->color);
@@ -81,18 +70,12 @@ void relief_fdf(int key, t_fdf *fdf)
 void    zoom_fdf(int key, t_fdf *fdf)
 {
 		fdf->key = 0;
-    if (key == 69)
-		{
-			fdf->scal += 0.5;
-			fdf->rel_z += 0.5;
-		}
+		if (key == 69)
+			fdf->scal += 1;
     else
-		{
-			fdf->scal -= 0.5;
-			fdf->rel_z -= 0.5;
-		}
-
-		mlx_destroy_image(fdf->mlx_ptr, fdf->img->img_ptr);
+			if (fdf->scal >= 1)
+				fdf->scal -= 1;
+    mlx_destroy_image(fdf->mlx_ptr, fdf->img->img_ptr);
 		mlx_clear_window(fdf->mlx_ptr, fdf->win_ptr);
 		coord_x_y(fdf);
 		coord_max(fdf);
