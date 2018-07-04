@@ -82,7 +82,7 @@ float		coord_x(t_fdf *fdf, float x, float y)
 
 float		coord_y(t_fdf *fdf, float x, float y, float z)
 {
-	return (fdf->scal * y - (fdf->scal * x) / 2 - z * fdf->rel_z * 0.82);
+	return (fdf->scal * y - (fdf->scal * x) / fdf->incli - z * fdf->rel_z * 0.82);
 }
 
 void	calc_horizontal_x(t_fdf *fdf, int color)

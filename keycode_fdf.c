@@ -21,6 +21,7 @@ void reinit_fdf(t_fdf *fdf)
 	fdf->scal = 12;
 	fdf->rel_z = 2;
 	fdf->deg = 0;
+	fdf->incli = 2;
   check_win_scale(fdf);
   fdf->img->img_ptr = mlx_new_image(fdf->mlx_ptr, fdf->img_wth, HEIGHT);
   fdf->img->data = (int *)mlx_get_data_addr(fdf->img->img_ptr, &fdf->img->bpp, &fdf->img->size_l, &fdf->img->endian);
@@ -109,22 +110,12 @@ void    random_color(int key, t_fdf *fdf)
 {
 	mlx_destroy_image(fdf->mlx_ptr, fdf->img->img_ptr);
 	mlx_clear_window(fdf->mlx_ptr, fdf->win_ptr);
-	if (key == 38)
-	{
-		fdf->seed = fdf_random(fdf->color * key);
-		fdf->color = int_to_color(fdf->seed + fdf->seed);
-		fdf->img->img_ptr = mlx_new_image(fdf->mlx_ptr, fdf->img_wth, HEIGHT);
-		fdf->img->data = (int *)mlx_get_data_addr(fdf->img->img_ptr, &fdf->img->bpp, &fdf->img->size_l, &fdf->img->endian);
-		calc_horizontal_x(fdf, fdf->color);
-		calc_vertical_y(fdf, fdf->color);
-	}
-	else
-	{
-		fdf->img->img_ptr = mlx_new_image(fdf->mlx_ptr, fdf->img_wth, HEIGHT);
-		fdf->img->data = (int *)mlx_get_data_addr(fdf->img->img_ptr, &fdf->img->bpp, &fdf->img->size_l, &fdf->img->endian);
-		calc_horizontal_x(fdf, 0);
-		calc_vertical_y(fdf, 0);
-	}
+	fdf->seed = fdf_random(fdf->color * key);
+	fdf->color = int_to_color(fdf->seed + fdf->seed);
+	fdf->img->img_ptr = mlx_new_image(fdf->mlx_ptr, fdf->img_wth, HEIGHT);
+	fdf->img->data = (int *)mlx_get_data_addr(fdf->img->img_ptr, &fdf->img->bpp, &fdf->img->size_l, &fdf->img->endian);
+	calc_horizontal_x(fdf, fdf->color);
+	calc_vertical_y(fdf, fdf->color);
 	mlx_put_image_to_window(fdf->mlx_ptr, fdf->win_ptr, fdf->img->img_ptr, 0, 0);
 }
 
@@ -191,10 +182,26 @@ float	rotate(t_fdf *fdf, float x, float y, int xoy)
 	return (point);
 }
 
-// void inclinate(int key, t_fdf *fdf)
-// {
-//
-// }
+void inclinate(int key, t_fdf *fdf)
+{
+	mlx_destroy_image(fdf->mlx_ptr, fdf->img->img_ptr);
+	mlx_clear_window(fdf->mlx_ptr, fdf->win_ptr);
+	if (key == 40)
+	{
+		if (fdf->incli < 8)
+			fdf->incli += 0.1;
+	}
+	else
+	{
+		if (fdf->incli > 1)
+			fdf->incli -= 0.1;
+	}
+	fdf->img->img_ptr = mlx_new_image(fdf->mlx_ptr, fdf->img_wth, HEIGHT);
+	fdf->img->data = (int *)mlx_get_data_addr(fdf->img->img_ptr, &fdf->img->bpp, &fdf->img->size_l, &fdf->img->endian);
+	calc_horizontal_x(fdf, fdf->color);
+	calc_vertical_y(fdf, fdf->color);
+	mlx_put_image_to_window(fdf->mlx_ptr, fdf->win_ptr, fdf->img->img_ptr, 0, 0);
+}
 int   key_fdf(int key, t_fdf *fdf)
 {
 	if (key == 53)
@@ -205,15 +212,15 @@ int   key_fdf(int key, t_fdf *fdf)
 		move_map(key, fdf);
 	if (key == 78 || key == 69)
 		zoom_fdf(key, fdf);
-	if (key == 38 || key == 45)
+	if (key == 4)
 		random_color(key, fdf);
-	if (key == 40)
+	if (key == 38)
 		epileptic_color(fdf);
 	if (key == 32 || key == 34)
 		relief_fdf(key, fdf);
 	if (key == 31 || key == 35)
 		rotation(key, fdf);
-	// if ( key == 46 || key == 37)
-	// 	inclinate(key, fdf);
+	if ( key == 40 || key == 37)
+		inclinate(key, fdf);
 	return (0);
 }
