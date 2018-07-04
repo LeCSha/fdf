@@ -108,14 +108,17 @@ void	calc_horizontal_x(t_fdf *fdf, int color)
 			ang_y = rotate(fdf, j + 1, i, 0);
 			fdf->endx = coord_x(fdf, ang_x, ang_y) + fdf->ptXdepart;
 			fdf->endy = coord_y(fdf, ang_x, ang_y, fdf->map[i].point[j + 1].z) + fdf->ptYdepart;
-			if (color == 0)
-			{
-				fdf->seed = fdf_random(fdf->color);
-				fdf->color = int_to_color(fdf->seed * (i + j + fdf->color));
-				draw_base_line(fdf, fdf->color);
-			}
-			else
-				draw_base_line(fdf, color);
+			pogressiv_color(fdf, fdf->map[i].point[j].z);
+			multicolor(fdf, j, i);
+			// if (color == 0)
+			// {
+			// 	fdf->seed = fdf_random(fdf->color);
+			// 	fdf->color = int_to_color(fdf->seed * (i + j + fdf->color));
+			// 	draw_base_line(fdf, fdf->color);
+			// }
+			// else
+			color = fdf->color;
+			draw_base_line(fdf, color);
 		}
 	}
 }
@@ -147,14 +150,18 @@ void	calc_vertical_y(t_fdf *fdf, int color)
 			ang_y = rotate(fdf, j, i + 1, 0);
 			fdf->endx = coord_x(fdf, ang_x, ang_y) + fdf->ptXdepart;
 			fdf->endy = coord_y(fdf, ang_x, ang_y, fdf->map[i + 1].point[j].z) + fdf->ptYdepart;
-			if (color == 0)
-			{
-				fdf->seed = fdf_random(fdf->color);
-				fdf->color = int_to_color(fdf->seed * (i + j + fdf->color));
-				draw_base_line(fdf, fdf->color);
-			}
-			else
-				draw_base_line(fdf, color);
+			pogressiv_color(fdf, fdf->map[i + 1].point[j].z);
+			multicolor(fdf, j, i);
+			color = fdf->color;
+			draw_base_line(fdf, color);
+			// if (color == 0)
+			// {
+			// 	fdf->seed = fdf_random(fdf->color);
+			// 	fdf->color = int_to_color(fdf->seed * (i + j + fdf->color));
+			// 	draw_base_line(fdf, fdf->color);
+			// }
+			// else
+			// 	draw_base_line(fdf, color);
 		}
 	}
 }

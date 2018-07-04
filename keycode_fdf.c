@@ -116,14 +116,15 @@ void    epileptic_color(t_fdf *fdf)
 	int i;
 
 	i = 0;
+	fdf->key = 38;
 	while (i < 50)
 	{
 		mlx_destroy_image(fdf->mlx_ptr, fdf->img->img_ptr);
 		mlx_clear_window(fdf->mlx_ptr, fdf->win_ptr);
 		fdf->img->img_ptr = mlx_new_image(fdf->mlx_ptr, fdf->img_wth, HEIGHT);
 		fdf->img->data = (int *)mlx_get_data_addr(fdf->img->img_ptr, &fdf->img->bpp, &fdf->img->size_l, &fdf->img->endian);
-		calc_horizontal_x(fdf, 0);
-		calc_vertical_y(fdf, 0);
+		calc_horizontal_x(fdf, fdf->color);
+		calc_vertical_y(fdf, fdf->color);
 		mlx_put_image_to_window(fdf->mlx_ptr, fdf->win_ptr, fdf->img->img_ptr, 0, 0);
 		mlx_do_sync(fdf->mlx_ptr);
 		ft_sleep();
@@ -185,6 +186,47 @@ void inclinate(int key, t_fdf *fdf)
 	calc_vertical_y(fdf, fdf->color);
 	mlx_put_image_to_window(fdf->mlx_ptr, fdf->win_ptr, fdf->img->img_ptr, 0, 0);
 }
+
+void pogressiv_color(t_fdf *fdf, int z)
+{
+	int res;
+	int color;
+	int r;
+	int g;
+	int b;
+
+	res = 0;
+	color = 0;
+	r = 0;
+	g = 204;
+	b = 0;
+	if (fdf->key == 48)
+	{
+		res = z * 5;
+		if (res > 0)
+		{
+			r = res - 204;
+			if (r < 0)
+				r = 0;
+			if (r > 204)
+				r = 204;
+			g -= res/3;
+			if (g < 0)
+				g = 0;
+		}
+		else
+		{
+			res = -z * 3;
+			b = 100 + res;
+			if (res > 210)
+				b = 210;
+			g = 0;
+		}
+		fdf->color = (r << 16) + (g << 8) + b;
+	}
+
+}
+
 int   key_fdf(int key, t_fdf *fdf)
 {
 	if (key == 53)
@@ -203,7 +245,19 @@ int   key_fdf(int key, t_fdf *fdf)
 		relief_fdf(key, fdf);
 	if (key == 31 || key == 35)
 		rotation(key, fdf);
-	if ( key == 40 || key == 37)
+	if (key == 40 || key == 37)
 		inclinate(key, fdf);
+	if (key == 48)
+	{
+		mlx_destroy_image(fdf->mlx_ptr, fdf->img->img_ptr);
+		mlx_clear_window(fdf->mlx_ptr, fdf->win_ptr);
+		fdf->key = 48;
+		fdf->img->img_ptr = mlx_new_image(fdf->mlx_ptr, fdf->img_wth, HEIGHT);
+		fdf->img->data = (int *)mlx_get_data_addr(fdf->img->img_ptr, &fdf->img->bpp, &fdf->img->size_l, &fdf->img->endian);
+		calc_horizontal_x(fdf, fdf->color);
+		calc_vertical_y(fdf, fdf->color);
+		mlx_put_image_to_window(fdf->mlx_ptr, fdf->win_ptr, fdf->img->img_ptr, 0, 0);
+	}
+
 	return (0);
 }

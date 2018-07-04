@@ -33,3 +33,12 @@ unsigned int fdf_random(int seed)
 	seed = (multi * tmp + addi) % INT_MAX;
   return ((unsigned int)seed);
 }
+
+void multicolor(t_fdf *fdf, int x, int y)
+{
+	if (fdf->key == 38)
+	{
+		fdf->seed = fdf_random(fdf->color);
+		fdf->color = int_to_color(fdf->seed * (x + y + fdf->color));		
+	}
+}

@@ -163,7 +163,7 @@ void put_string(t_fdf *fdf)
 {
   void *win;
 
-  win = mlx_new_window(fdf->mlx_ptr, 330, 330, "Keycode");
+  win = mlx_new_window(fdf->mlx_ptr, 330, 355, "Keycode");
   mlx_string_put(fdf->mlx_ptr, win, 20, 40, 0x2EDD17, "Autor: abaille");
   mlx_string_put(fdf->mlx_ptr, win, 20, 65, 0x2EDD17, "Zoom: [+][-]");
   mlx_string_put(fdf->mlx_ptr, win, 20, 90, 0x2EDD17, "Move: [UP][DOWN][LEFT][RIGHT]");
@@ -172,8 +172,9 @@ void put_string(t_fdf *fdf)
   mlx_string_put(fdf->mlx_ptr, win, 20, 165, 0x2EDD17, "Inclinate: [K][L]");
   mlx_string_put(fdf->mlx_ptr, win, 20, 215, 0x2EDD17, "Random colors: [J]");
   mlx_string_put(fdf->mlx_ptr, win, 20, 240, 0x2EDD17, "Change color: [H]");
-  mlx_string_put(fdf->mlx_ptr, win, 20, 265, 0x2EDD17, "Reset: [Entr]");
-  mlx_string_put(fdf->mlx_ptr, win, 20, 290, 0x2EDD17, "Exit: [ESC]");
+  mlx_string_put(fdf->mlx_ptr, win, 20, 265, 0x2EDD17, "Top color: [TAB]");
+  mlx_string_put(fdf->mlx_ptr, win, 20, 290, 0x2EDD17, "Reset: [Entr]");
+  mlx_string_put(fdf->mlx_ptr, win, 20, 315, 0x2EDD17, "Exit: [ESC]");
   fdf->win_str = win;
 }
 

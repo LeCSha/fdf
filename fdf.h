@@ -106,6 +106,7 @@ int			check_file(char *file);
 int			check_char(char *line);
 void		print_error(int nb, t_fdf *fdf);
 float	rotate(t_fdf *fdf, float j, float y, int xoy);
-// void 		put_string(t_fdf *fdf);
+void pogressiv_color(t_fdf *fdf, int z);
+void multicolor(t_fdf *fdf, int x, int y);
 
 #endif
