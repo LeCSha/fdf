@@ -57,6 +57,7 @@ void	go_trace_it(t_fdf *fdf, int color)
 			else
 				ratio = ratio + updown;
 			fdf->starty = fdf->starty + fdf->yinc;
+			// pogressiv_color(fdf, fdf->map[i].point[j].z);
 			if (fdf->starty >= 0 && fdf->startx >= 0 && (fdf->starty * fdf->img_wth + fdf->startx) < fdf->img_wth * HEIGHT)
 				fdf->img->data[fdf->starty * fdf->img_wth + fdf->startx] = color;
 			i++;

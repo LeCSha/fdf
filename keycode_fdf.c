@@ -69,7 +69,7 @@ void relief_fdf(int key, t_fdf *fdf)
 
 void    zoom_fdf(int key, t_fdf *fdf)
 {
-		fdf->key = 0;
+		// fdf->key = 0;
 		if (key == 69)
 			fdf->scal += 1;
     else
@@ -198,18 +198,18 @@ void pogressiv_color(t_fdf *fdf, int z)
 	res = 0;
 	color = 0;
 	r = 0;
-	g = 204;
+	g = 190;
 	b = 0;
 	if (fdf->key == 48)
 	{
 		res = z * 5;
 		if (res > 0)
 		{
-			r = res - 204;
+			r = res - 190;
 			if (r < 0)
 				r = 0;
-			if (r > 204)
-				r = 204;
+			if (r > 160)
+				r = 160;
 			g -= res/3;
 			if (g < 0)
 				g = 0;
