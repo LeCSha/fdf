@@ -3,29 +3,30 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abaille <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: abaille <abaille@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/18 16:38:40 by abaille           #+#    #+#             */
-/*   Updated: 2018/07/18 16:38:42 by abaille          ###   ########.fr       */
+/*   Updated: 2019/05/28 17:44:12 by abaille          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-void	key_draw(t_fdf *fdf)
+void	key_draw(t_env *fdf)
 {
-	mlx_destroy_image(fdf->mlx_ptr, fdf->img->img_ptr);
-	mlx_clear_window(fdf->mlx_ptr, fdf->win_ptr);
-	fdf->img->img_ptr = mlx_new_image(fdf->mlx_ptr, fdf->img_wth, HEIGHT);
-	IMG_DATA = (int *)mlx_get_data_addr(fdf->img->img_ptr, &fdf->img->bpp,
-	&fdf->img->size_l, &fdf->img->endian);
+	mlx_destroy_image(fdf->mlx.mlx_ptr, fdf->mlx.img->img_ptr);
+	mlx_clear_window(fdf->mlx.mlx_ptr, fdf->mlx.win_ptr);
+	fdf->mlx.img->img_ptr = mlx_new_image(fdf->mlx.mlx_ptr, fdf->mlx.img_wth, HEIGHT);
+	IMG_DATA = (int *)mlx_get_data_addr(fdf->mlx.img->img_ptr, &fdf->mlx.img->bpp,
+	&fdf->mlx.img->size_l, &fdf->mlx.img->endian);
 	calc_horizontal_x(fdf);
 	calc_vertical_y(fdf);
-	mlx_put_image_to_window(fdf->mlx_ptr, fdf->win_ptr,
-	fdf->img->img_ptr, 0, 0);
+	// draw_map(fdf);
+	mlx_put_image_to_window(fdf->mlx.mlx_ptr, fdf->mlx.win_ptr,
+	fdf->mlx.img->img_ptr, 0, 0);
 }
 
-void	free_fdf(t_fdf *fdf)
+void	free_fdf(t_env *fdf)
 {
 	int i;
 
@@ -44,36 +45,34 @@ void	free_fdf(t_fdf *fdf)
 		free(fdf->map);
 		fdf->map = NULL;
 	}
-	if (fdf->img)
+	if (fdf->mlx.img)
 	{
-		free(fdf->img);
-		fdf->img = NULL;
+		free(fdf->mlx.img);
+		fdf->mlx.img = NULL;
 	}
-	free(fdf);
-	fdf = NULL;
 }
 
-void	exit_fdf(t_fdf *fdf)
+void	exit_fdf(t_env *fdf)
 {
-	mlx_destroy_image(fdf->mlx_ptr, fdf->img->img_ptr);
-	mlx_clear_window(fdf->mlx_ptr, fdf->win_ptr);
-	mlx_clear_window(fdf->mlx_ptr, fdf->win_str);
-	mlx_destroy_window(fdf->mlx_ptr, fdf->win_ptr);
+	mlx_destroy_image(fdf->mlx.mlx_ptr, fdf->mlx.img->img_ptr);
+	mlx_clear_window(fdf->mlx.mlx_ptr, fdf->mlx.win_ptr);
+	mlx_clear_window(fdf->mlx.mlx_ptr, fdf->mlx.win_str);
+	mlx_destroy_window(fdf->mlx.mlx_ptr, fdf->mlx.win_ptr);
 	free_fdf(fdf);
 	exit(0);
 }
 
-void	reinit_fdf(t_fdf *fdf)
+void	reinit_fdf(t_env *fdf)
 {
 	fdf->key = 0;
-	fdf->img_wth = 1000;
-	fdf->depx = 0;
-	fdf->depy = 0;
+	fdf->mlx.img_wth = 1000;
+	fdf->dep.x = 0;
+	fdf->dep.y = 0;
 	fdf->scal = 50;
 	fdf->rel_z = 4;
 	fdf->deg = 0;
 	fdf->incli = 2;
-	fdf->color = 0x6501de;
+	fdf->pal_ptr = &(fdf->pal)[0];
 	check_win_scale(fdf);
 	key_draw(fdf);
 }

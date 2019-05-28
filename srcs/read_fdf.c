@@ -1,31 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   draw_fdf.c                                         :+:      :+:    :+:   */
+/*   read_fdf.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abaille <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: abaille <abaille@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/01 17:55:08 by abaille           #+#    #+#             */
-/*   Updated: 2018/07/01 17:55:12 by abaille          ###   ########.fr       */
+/*   Updated: 2019/05/27 21:35:21 by abaille          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-void	count_points(t_fdf *fdf, char *line)
+void	count_points(t_env *fdf, char *line)
 {
-	fdf->xinc = 0;
+	fdf->inc.x = 0;
 	fdf->nbpoints = 0;
-	while (line[fdf->xinc] != '\0')
+	while (line[fdf->inc.x] != '\0')
 	{
-		if ((line[fdf->xinc] >= '0' && line[fdf->xinc] <= '9')
-		&& (line[fdf->xinc + 1] == ' ' || line[fdf->xinc + 1] == '\0'))
+		if ((line[fdf->inc.x] >= '0' && line[fdf->inc.x] <= '9')
+		&& (line[fdf->inc.x + 1] == ' ' || line[fdf->inc.x + 1] == '\0'))
 			fdf->nbpoints++;
-		fdf->xinc++;
+		fdf->inc.x++;
 	}
 }
 
-int		count_fdf(int fd, t_fdf *fdf)
+int		count_fdf(int fd, t_env *fdf)
 {
 	char	*line;
 	int		tmp;
@@ -37,69 +37,66 @@ int		count_fdf(int fd, t_fdf *fdf)
 		if (check_char(line) == -1)
 			print_error(2, fdf, 0);
 		count_points(fdf, line);
-		if (tmp == 0)
-			tmp = fdf->nbpoints;
-		else if (tmp != fdf->nbpoints || fdf->nbpoints < 2)
-			print_error(4, fdf, 0);
 		fdf->nblines++;
+		if (!(fdf->nbpt = realloc(fdf->nbpt, fdf->nblines * sizeof(*fdf->nbpt))))
+			print_error(1, fdf, 0);
+		fdf->nbpt[fdf->nblines - 1] = fdf->nbpoints;
 		free(line);
 		line = NULL;
 	}
 	free(line);
 	line = NULL;
-	if (fdf->nblines < 2)
-		print_error(4, fdf, 0);
 	return (0);
 }
 
-int		fill_map(t_fdf *fdf, char *line, char *tmp, int iter)
+int		fill_map(t_env *fdf, char *line, char *tmp, int *iter)
 {
-	while (line[fdf->xinc] != '\0')
+	while (line[fdf->inc.x] != '\0')
 	{
-		if ((line[fdf->xinc] >= '0' && line[fdf->xinc] <= '9') ||
-		line[fdf->xinc] == '-')
+		if ((line[fdf->inc.x] >= '0' && line[fdf->inc.x] <= '9') ||
+		line[fdf->inc.x] == '-')
 		{
-			if (line[fdf->xinc + 1] >= '0' && line[fdf->xinc + 1] <= '9')
+			if (line[fdf->inc.x + 1] >= '0' && line[fdf->inc.x + 1] <= '9')
 			{
-				fdf->startx = fdf->xinc;
-				while ((line[fdf->xinc] >= '0' && line[fdf->xinc] <= '9') ||
-				line[fdf->xinc] == '-')
-					fdf->xinc++;
-				if (!(tmp = ft_strsub(line, fdf->startx, fdf->xinc)))
+				fdf->start.x = fdf->inc.x;
+				while ((line[fdf->inc.x] >= '0' && line[fdf->inc.x] <= '9') ||
+				line[fdf->inc.x] == '-')
+					fdf->inc.x++;
+				if (!(tmp = ft_strsub(line, fdf->start.x, fdf->inc.x)))
 					return (-1);
-				fdf->map[fdf->yinc].pt[iter].z = ft_atoi(tmp);
+				fdf->map[fdf->inc.y].pt[*iter].z = ft_atoi(tmp);
 				free(tmp);
 				tmp = NULL;
 			}
 			else
-				fdf->map[fdf->yinc].pt[iter].z = ft_atoi(&line[fdf->xinc]);
-			iter++;
+				fdf->map[fdf->inc.y].pt[*iter].z = ft_atoi(&line[fdf->inc.x]);
+			(*iter)++;
 		}
-		if (line[fdf->xinc] != '\0')
-			fdf->xinc++;
+		if (line[fdf->inc.x] != '\0')
+			fdf->inc.x++;
 	}
 	return (0);
 }
 
-t_map	*read_map(int fd, t_fdf *fdf)
+t_map	*read_map(int fd, t_env *fdf)
 {
 	char	*line;
 	char	*tmp;
 	int		iter;
 
 	tmp = NULL;
-	iter = 0;
 	if (!(fdf->map = (t_map*)malloc(sizeof(t_map) * fdf->nblines)))
 		return (NULL);
 	line = NULL;
 	while (get_next_line(fd, &line) > 0)
 	{
-		if (!(fdf->map[fdf->yinc].pt = (t_point*)malloc(sizeof(t_point) *
-		fdf->nbpoints)))
+		iter = 0;
+		if (!(fdf->map[fdf->inc.y].pt = (t_point*)malloc(sizeof(t_point) *
+		fdf->nbpt[fdf->inc.y])))
 			return (NULL);
-		fdf->xinc = 0;
-		fill_map(fdf, line, tmp, iter);
-		fdf->yinc++;
+		fdf->inc.x = 0;
+		fill_map(fdf, line, tmp, &iter);
+		fdf->inc.y++;
 		free(line);
 		line = NULL;
 	}
@@ -108,7 +105,7 @@ t_map	*read_map(int fd, t_fdf *fdf)
 	return (fdf->map);
 }
 
-int		ft_open(char *av, t_fdf *fdf)
+int		ft_open(char *av, t_env *fdf)
 {
 	int fd;
 

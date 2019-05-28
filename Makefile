@@ -3,16 +3,16 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: abaille <marvin@42.fr>                     +#+  +:+       +#+         #
+#    By: abaille <abaille@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/01/25 00:22:44 by abaille           #+#    #+#              #
-#    Updated: 2018/07/21 19:01:06 by abaille          ###   ########.fr        #
+#    Updated: 2019/05/28 15:21:27 by abaille          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = fdf
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -g -fsanitize=address
 LIBFT = ./libft
 MLX = ./minilibx
 FRK = -framework

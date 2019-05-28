@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fdf_checkerror.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abaille <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: abaille <abaille@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/18 15:00:02 by abaille           #+#    #+#             */
-/*   Updated: 2018/07/18 15:00:06 by abaille          ###   ########.fr       */
+/*   Updated: 2019/05/27 21:35:21 by abaille          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ int		check_char(char *line)
 	return (0);
 }
 
-void	print_error(int nb, t_fdf *fdf, int ref)
+void	print_error(int nb, t_env *fdf, int ref)
 {
 	if (nb == 1)
 		ft_putstr("Problem opening/closing file - file missing/not valid\n");

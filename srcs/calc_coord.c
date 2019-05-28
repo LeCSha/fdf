@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   calc_coord.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abaille <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: abaille <abaille@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/18 15:08:51 by abaille           #+#    #+#             */
-/*   Updated: 2018/07/18 15:08:53 by abaille          ###   ########.fr       */
+/*   Updated: 2019/05/28 13:52:57 by abaille          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-void	coord_x_y(t_fdf *fdf)
+static void	coord_x_y(t_env *fdf)
 {
 	int		i;
 	int		j;
@@ -25,10 +25,11 @@ void	coord_x_y(t_fdf *fdf)
 	while (i < fdf->nblines)
 	{
 		j = 0;
-		while (j < fdf->nbpoints)
+		while (j < fdf->nbpt[i])
 		{
-			ang_x = rotate(fdf, j, i, 1);
-			ang_y = rotate(fdf, j, i, 0);
+			ang_x = j;
+			ang_y = i;
+			rotate(fdf, &ang_x, &ang_y);
 			fdf->map[i].pt[j].x = iso_x(fdf, ang_x, ang_y);
 			fdf->map[i].pt[j].y = iso_y(fdf, ang_x,
 				ang_y, fdf->map[i].pt[j].z);
@@ -38,77 +39,49 @@ void	coord_x_y(t_fdf *fdf)
 	}
 }
 
-void	coord_max(t_fdf *fdf)
+static void	coord_max(t_env *fdf)
 {
 	int i;
 	int j;
 
-	i = 0;
-	fdf->x_max = fdf->map[0].pt[0].x;
-	fdf->y_max = fdf->map[0].pt[0].y;
-	fdf->z_max = fdf->map[0].pt[0].z;
-	while (i < fdf->nblines)
+	i = -1;
+	fdf->max.x = fdf->map[0].pt[0].x;
+	fdf->max.y = fdf->map[0].pt[0].y;
+	fdf->max.z = fdf->map[0].pt[0].z;
+	while (++i < fdf->nblines)
 	{
-		j = 0;
-		while (j < fdf->nbpoints)
+		j = -1;
+		while (++j < fdf->nbpt[i])
 		{
-			if (fdf->x_max < fdf->map[i].pt[j].x)
-				fdf->x_max = fdf->map[i].pt[j].x;
-			if (fdf->z_max < fdf->map[i].pt[j].z)
-				fdf->z_max = fdf->map[i].pt[j].z;
-			if (fdf->y_max < fdf->map[i].pt[j].y)
-				fdf->y_max = fdf->map[i].pt[j].y;
-			j++;
+			fdf->max.x < fdf->map[i].pt[j].x ? fdf->max.x = fdf->map[i].pt[j].x : 0;
+			fdf->max.z < fdf->map[i].pt[j].z ? fdf->max.z = fdf->map[i].pt[j].z : 0;
+			fdf->max.y < fdf->map[i].pt[j].y ? fdf->max.y = fdf->map[i].pt[j].y : 0;
 		}
-		i++;
 	}
 }
 
-void	coord_min(t_fdf *fdf)
+static void	coord_min(t_env *fdf)
 {
 	int i;
 	int j;
 
-	i = 0;
-	fdf->x_min = fdf->map[0].pt[0].x;
-	fdf->y_min = fdf->map[0].pt[0].y;
-	fdf->z_min = fdf->map[0].pt[0].z;
-	while (i < fdf->nblines)
+	i = -1;
+	fdf->min.x = fdf->map[0].pt[0].x;
+	fdf->min.y = fdf->map[0].pt[0].y;
+	fdf->min.z = fdf->map[0].pt[0].z;
+	while (++i < fdf->nblines)
 	{
-		j = 0;
-		while (j < fdf->nbpoints)
+		j = -1;
+		while (++j < fdf->nbpt[i])
 		{
-			if (fdf->x_min > fdf->map[i].pt[j].x)
-				fdf->x_min = fdf->map[i].pt[j].x;
-			if (fdf->z_min > fdf->map[i].pt[j].z)
-				fdf->z_min = fdf->map[i].pt[j].z;
-			if (fdf->y_min > fdf->map[i].pt[j].y)
-				fdf->y_min = fdf->map[i].pt[j].y;
-			j++;
+			fdf->min.x > fdf->map[i].pt[j].x ? fdf->min.x = fdf->map[i].pt[j].x : 0;
+			fdf->min.z > fdf->map[i].pt[j].z ? fdf->min.z = fdf->map[i].pt[j].z : 0;
+			fdf->min.y > fdf->map[i].pt[j].y ? fdf->min.y = fdf->map[i].pt[j].y : 0;
 		}
-		i++;
 	}
 }
 
-void	res_z(t_fdf *fdf)
-{
-	int i;
-	int j;
-
-	i = 0;
-	while (i < fdf->nblines)
-	{
-		j = 0;
-		while (j < fdf->nbpoints)
-		{
-			fdf->map[i].pt[j].z = fdf->map[i].pt[j].z / 5;
-			j++;
-		}
-		i++;
-	}
-}
-
-void	calcul_coord(t_fdf *fdf)
+void	calcul_coord(t_env *fdf)
 {
 	coord_x_y(fdf);
 	coord_max(fdf);

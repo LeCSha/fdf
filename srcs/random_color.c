@@ -3,65 +3,58 @@
 /*                                                        :::      ::::::::   */
 /*   random_color.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abaille <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: abaille <abaille@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/18 17:03:08 by abaille           #+#    #+#             */
-/*   Updated: 2018/07/18 17:03:12 by abaille          ###   ########.fr       */
+/*   Updated: 2019/05/28 19:00:15 by abaille          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-int		int_to_color(unsigned int color)
+int	lightn(int start, int end, double perc)
 {
-	int	r;
-	int g;
-	int b;
-	int res;
-
-	r = (color & 0xFF0000) >> 16;
-	g = (color & 0x00FF00) >> 8;
-	b = color & 0x0000FF;
-	res = (r << 16) + (g << 8) + b;
-	return (res);
+	return ((int)((1 - perc) * start + perc * end));
 }
 
-void	multicolor(t_fdf *fdf, int x, int y)
+double	get_percentage(int start, int end, int current)
 {
-	if (fdf->key == 38)
-	{
-		fdf->seed = fdf_random(fdf->color);
-		fdf->color = int_to_color(fdf->seed * (x + y + fdf->color));
-	}
+	double	placement;
+	double	distance;
+
+	placement = current - start;
+	distance = end - start;
+	return ((distance == 0) ? 1.0 : (placement / distance));
 }
 
-void	random_color(int key, t_fdf *fdf)
+int	get_color(t_ipoint current, t_ipoint start, t_ipoint end, t_ipoint delta)
 {
-	fdf->seed = fdf_random(fdf->color * key);
-	fdf->color = int_to_color(fdf->seed + fdf->seed);
-	key_draw(fdf);
+	int		red;
+	int		green;
+	int		blue;
+	double	perc;
+
+	if (current.color == end.color)
+		return (current.color);
+	if (delta.x > delta.y)
+		perc = get_percentage(start.x, end.x, current.x);
+	else
+		perc = get_percentage(start.y, end.y, current.y);
+	red = lightn((start.color >> 16) & 0xFF, (end.color >> 16) & 0xFF, perc);
+	green = lightn((start.color >> 8) & 0xFF, (end.color >> 8) & 0xFF, perc);
+	blue = lightn(start.color & 0xFF, end.color & 0xFF, perc);
+	return ((red << 16) | (green << 8) | blue);
 }
 
-void	ft_sleep(void)
+int	default_color(int z, t_env *fdf)
 {
-	int i;
+	double	perc;
 
-	i = 0;
-	while (i < 100000000)
-		i++;
-}
-
-void	epileptic_color(t_fdf *fdf)
-{
-	int i;
-
-	i = 0;
-	fdf->key = 38;
-	while (i < 50)
-	{
-		key_draw(fdf);
-		mlx_do_sync(fdf->mlx_ptr);
-		ft_sleep();
-		i++;
-	}
+	perc = get_percentage(fdf->min.z, fdf->max.z, z);
+	if (perc < 0.3)
+		return (fdf->pal_ptr->color[0]);
+	else if (perc < 0.7)
+		return (fdf->pal_ptr->color[1]);
+	else
+		return (fdf->pal_ptr->color[2]);
 }
